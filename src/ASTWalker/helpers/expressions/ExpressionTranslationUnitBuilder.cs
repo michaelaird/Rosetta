@@ -73,8 +73,8 @@ namespace Rosetta.AST.Helpers
                     {
                         throw new InvalidCastException("Unable to correctly cast expected unary expression to unary expression!");
                     }
-                    return prefixUnaryExpression != null ? 
-                        BuildUnaryExpressionTranslationUnit(prefixUnaryExpression, this.semanticModel) : 
+                    return prefixUnaryExpression != null ?
+                        BuildUnaryExpressionTranslationUnit(prefixUnaryExpression, this.semanticModel) :
                         BuildUnaryExpressionTranslationUnit(postfixUnaryExpression, this.semanticModel);
 
                 // Literal expressions
@@ -91,8 +91,11 @@ namespace Rosetta.AST.Helpers
                     }
                     return BuildLiteralExpressionTranslationUnit(literalExpression, this.semanticModel);
 
+
+                //case SyntaxKind.IdentifierName:
+                case SyntaxKind.GenericName:
                 case SyntaxKind.IdentifierName:
-                    var identifierNameExpression = this.node as IdentifierNameSyntax;
+                    var identifierNameExpression = this.node as SimpleNameSyntax;
                     if (identifierNameExpression == null)
                     {
                         throw new InvalidCastException("Unable to correctly cast expected identifier name expression to identifer name expression!");
@@ -107,14 +110,13 @@ namespace Rosetta.AST.Helpers
                     }
                     return BuildInvokationExpressionTranslationUnit(invokationExpression, this.semanticModel);
 
-                // TODO: Enable when object creation and invocation have been completed
-                //case SyntaxKind.ObjectCreationExpression:
-                //    var objectCreationExpression = this.node as ObjectCreationExpressionSyntax;
-                //    if (objectCreationExpression == null)
-                //    {
-                //        throw new InvalidCastException("Unable to correctly cast expected object creation expression to object creation expression!");
-                //    }
-                //    return BuildObjectCreationExpressionTranslationUnit(objectCreationExpression);
+                case SyntaxKind.ObjectCreationExpression:
+                    var objectCreationExpression = this.node as ObjectCreationExpressionSyntax;
+                    if (objectCreationExpression == null)
+                    {
+                        throw new InvalidCastException("Unable to correctly cast expected object creation expression to object creation expression!");
+                    }
+                    return BuildObjectCreationExpressionTranslationUnit(objectCreationExpression, this.semanticModel);
 
                 // Parenthetical
                 case SyntaxKind.ParenthesizedExpression:
@@ -305,7 +307,11 @@ namespace Rosetta.AST.Helpers
                     MemberAccessExpressionTranslationUnit.MemberAccessMethod.Base);
             }
 
-            throw new InvalidOperationException("Cannot build a member access expression as it is not a `this` expression, nor a `base` expression!");
+            return MemberAccessExpressionTranslationUnit.Create(
+                IdentifierTranslationUnit.Create(helper.MemberName),
+                MemberAccessExpressionTranslationUnit.MemberAccessMethod.This);
+
+//            throw new InvalidOperationException("Cannot build a member access expression as it is not a `this` expression, nor a `base` expression!");
         }
 
         private static ITranslationUnit BuildAssignmentExpressionTranslationUnit(AssignmentExpressionSyntax expression, SemanticModel semanticModel)
@@ -313,8 +319,8 @@ namespace Rosetta.AST.Helpers
             var helper = new AssignmentExpression(expression, semanticModel);
 
             return AssignmentExpressionTranslationUnit.Create(
-                new ExpressionTranslationUnitBuilder(helper.LeftHand, semanticModel).Build(), 
-                new ExpressionTranslationUnitBuilder(helper.RightHand, semanticModel).Build(), 
+                new ExpressionTranslationUnitBuilder(helper.LeftHand, semanticModel).Build(),
+                new ExpressionTranslationUnitBuilder(helper.RightHand, semanticModel).Build(),
                 helper.Operator);
         }
 
@@ -322,7 +328,7 @@ namespace Rosetta.AST.Helpers
         {
             var helper = new InvokationExpression(expression, semanticModel);
 
-            var translationUnit =  InvokationExpressionTranslationUnit.Create(
+            var translationUnit = InvokationExpressionTranslationUnit.Create(
                 new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
 
             foreach (var argument in helper.Arguments)
@@ -335,15 +341,24 @@ namespace Rosetta.AST.Helpers
             return translationUnit;
         }
 
-        // TODO: Enable once invocation expressions have been completed
-        //private static ITranslationUnit BuildObjectCreationExpressionTranslationUnit(ObjectCreationExpressionSyntax expression, SemanticModel semanticModel)
-        //{
-        //    var helper = new IdentifierExpression(expression, semanticModel);
+        private static ITranslationUnit BuildObjectCreationExpressionTranslationUnit(ObjectCreationExpressionSyntax expression, SemanticModel semanticModel)
+        {
+            var helper = new ObjectCreationExpression(expression, semanticModel);
 
-        //    return IdentifierTranslationUnit.Create(helper.Identifier);
-        //}
+            var translationUnit = ObjectCreateExpressionTranslationUnit.Create(
+                new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
 
-        private static ITranslationUnit BuildIdentifierNameExpressionTranslationUnit(IdentifierNameSyntax expression, SemanticModel semanticModel)
+            foreach (var argument in helper.Arguments)
+            {
+                var argumentTranslationUnit = new ExpressionTranslationUnitBuilder(argument.Expression, semanticModel).Build();
+
+                translationUnit.AddArgument(argumentTranslationUnit);
+            }
+
+            return translationUnit;
+        }
+
+        private static ITranslationUnit BuildIdentifierNameExpressionTranslationUnit(SimpleNameSyntax expression, SemanticModel semanticModel)
         {
             var helper = new IdentifierExpression(expression, semanticModel);
 

@@ -21,7 +21,7 @@ namespace Rosetta.AST.Helpers
         /// Initializes a new instance of the <see cref="IdentifierExpression"/> class.
         /// </summary>
         /// <param name="syntaxNode"></param>
-        public IdentifierExpression(IdentifierNameSyntax syntaxNode)
+        public IdentifierExpression(SimpleNameSyntax syntaxNode)
             : this(syntaxNode, null)
         {
         }
@@ -31,7 +31,7 @@ namespace Rosetta.AST.Helpers
         /// </summary>
         /// <param name="syntaxNode"></param>
         /// <param name="semanticModel"></param>
-        public IdentifierExpression(IdentifierNameSyntax syntaxNode, SemanticModel semanticModel)
+        public IdentifierExpression(SimpleNameSyntax syntaxNode, SemanticModel semanticModel)
             : base(syntaxNode, semanticModel)
         {
         }
@@ -44,9 +44,9 @@ namespace Rosetta.AST.Helpers
             get { return this.IdentifierNameSyntaxNode.Identifier.ValueText; }
         }
 
-        private IdentifierNameSyntax IdentifierNameSyntaxNode
+        private SimpleNameSyntax IdentifierNameSyntaxNode
         {
-            get { return this.SyntaxNode as IdentifierNameSyntax; }
+            get { return this.SyntaxNode as SimpleNameSyntax; }
         }
     }
 }

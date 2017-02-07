@@ -131,6 +131,7 @@
     <Compile Include="helpers\expressions\BinaryExpression.cs" />
     <Compile Include="helpers\expressions\ExpressionTranslationUnitBuilder.cs" />
     <Compile Include="helpers\expressions\IdentifierExpression.cs" />
+    <Compile Include="helpers\expressions\ObjectCreationExpression.cs" />
     <Compile Include="helpers\expressions\InvokationExpression.cs" />
     <Compile Include="helpers\expressions\LiteralExpression.cs" />
     <Compile Include="helpers\expressions\MemberAccessExpression.cs" />
