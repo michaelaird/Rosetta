@@ -100,10 +100,10 @@ namespace Rosetta.AST
             this.VisitIfStatementCore(node);
             this.InvokeIfStatementVisited(this, new WalkerEventArgs());
 
-            if (this.ShouldWalkInto)
-            {
+            //if (this.ShouldWalkInto)
+            //{
                 base.VisitIfStatement(node);
-            }
+            //}
         }
 
         // TODO: Remove

@@ -128,13 +128,14 @@ namespace Rosetta.AST.Helpers
                     return BuildParenthesizedExpressionTranslationUnit(parenthesizedExpression, this.semanticModel);
 
                 // Member access expressions
-                case SyntaxKind.SimpleMemberAccessExpression:
-                    var memberAccessExpression = this.node as MemberAccessExpressionSyntax;
-                    if (memberAccessExpression == null)
-                    {
-                        throw new InvalidCastException("Unable to correctly cast expected member access expression to member access expression!");
-                    }
-                    return BuildMemberAccessExpressionTranslationUnit(memberAccessExpression, this.semanticModel);
+                // commenting this out so that it faults under the default
+                //case SyntaxKind.SimpleMemberAccessExpression:
+                //    var memberAccessExpression = this.node as MemberAccessExpressionSyntax;
+                //    if (memberAccessExpression == null)
+                //    {
+                //        throw new InvalidCastException("Unable to correctly cast expected member access expression to member access expression!");
+                //    }
+                //    return BuildMemberAccessExpressionTranslationUnit(memberAccessExpression, this.semanticModel);
 
                 // Assignment expressions
                 case SyntaxKind.AddAssignmentExpression:
@@ -154,6 +155,14 @@ namespace Rosetta.AST.Helpers
                         throw new InvalidCastException("Unable to correctly cast expected assignment expression to assignment expression!");
                     }
                     return BuildAssignmentExpressionTranslationUnit(assignmentExpression, this.semanticModel);
+
+                default:
+                    var defaultExpression = this.node as CSharpSyntaxNode;
+                    if (defaultExpression == null)
+                    {
+                        throw new InvalidCastException("Error while converting the default scenario");
+                    }
+                    return BuildDefaultExpressionTranslationUnit(defaultExpression, this.semanticModel);
             }
 
             throw new InvalidOperationException(string.Format("Cannot build an expression for node type {0}!", this.node.Kind()));
@@ -363,6 +372,34 @@ namespace Rosetta.AST.Helpers
             var helper = new IdentifierExpression(expression, semanticModel);
 
             return IdentifierTranslationUnit.Create(helper.Identifier);
+        }
+
+        private static ITranslationUnit BuildDefaultExpressionTranslationUnit(CSharpSyntaxNode expression, SemanticModel semanticModel)
+        {
+            //SyntaxToken token = expression.Token;
+
+            return DefaultTranslationUnit.Create(expression.ToString());
+
+            //switch (token.Kind())
+            //{
+            //    case SyntaxKind.NumericLiteralToken:
+            //        return LiteralTranslationUnit<int>.Create((int)token.Value);
+
+            //    case SyntaxKind.StringLiteralToken:
+            //        return LiteralTranslationUnit<string>.Create((string)token.Value);
+
+            //    case SyntaxKind.CharacterLiteralExpression:
+            //        return null;
+
+            //    case SyntaxKind.TrueKeyword:
+            //    case SyntaxKind.FalseKeyword:
+            //        return LiteralTranslationUnit<bool>.Create((bool)token.Value);
+
+            //    case SyntaxKind.NullKeyword:
+            //        return LiteralTranslationUnit.Null;
+            //}
+
+            throw new InvalidOperationException(string.Format("Default Expression has failed!"));
         }
 
         #endregion
