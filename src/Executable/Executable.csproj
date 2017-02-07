@@ -30,6 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +48,7 @@
     <Compile Include="Executable.cs" />
     <Compile Include="external\MonoOptions.cs" />
     <Compile Include="FileAppendableContentConversionRunner.cs" />
+    <Compile Include="ProjectConversionRunner.cs" />
     <Compile Include="FileConversionRunner.cs" />
     <Compile Include="FileManager.cs" />
     <Compile Include="FileSilentConversionRunner.cs" />

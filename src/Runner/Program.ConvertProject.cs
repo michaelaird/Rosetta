@@ -8,6 +8,7 @@ namespace Rosetta.Runner
     using System;
 
     using Rosetta.Executable;
+    using AST;
 
     /// <summary>
     /// Part of program responsible for translating one single file.
@@ -16,9 +17,42 @@ namespace Rosetta.Runner
     /// </summary>
     internal partial class Program
     {
+        protected IRunner projectConversionRunner;
+
+        protected IRunner ProjectConversionRunner
+        {
+            get
+            {
+                if (this.projectConversionRunner == null)
+                {
+                    this.projectConversionRunner = this.CreateProjectConversionRunner();
+                }
+
+                return this.projectConversionRunner;
+            }
+        }
+
+        protected virtual IRunner CreateProjectConversionRunner()
+        {
+            return new ProjectConversionRunner(PerformProjectConversion, new ConversionArguments()
+            {
+                ProjectPath = this.projectPath,
+                AssemblyPath = this.assemblyPath,
+                OutputDirectory = this.outputFolder,
+                Extension = Extension
+            });
+        }
+
         protected virtual void ConvertProject()
         {
-            
+            this.ProjectConversionRunner.Run();
+        }
+
+        protected static string PerformProjectConversion(ConversionArguments arguments)
+        {
+            var program = new ProgramWrapper(arguments.Source, arguments.AssemblyPath);
+
+            return program.Output;
         }
 
         #region Helpers

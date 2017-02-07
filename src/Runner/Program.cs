@@ -109,7 +109,7 @@ namespace Rosetta.Runner
                 { AssemblyOption, "The path to the assembly {FILE} to use in the conversion process.",
                   value => this.assemblyPath = value },
                 { ProjectOption, "The path to the C# {PROJECT} to convert into TypeScript project.",
-                  value => this.filePath = value },
+                  value => this.projectPath = value },
                 { OutputOption, "The {OUTPUT} folder path where Rosetta will emit all output files.",
                   value => this.outputFolder = value },
                 { FileNameOption, "The {FILENAME} to use for output file. Valid only when {FILE} is specified.",

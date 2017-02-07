@@ -42,6 +42,11 @@ namespace Rosetta.Executable
         public string FilePath { get; set; }
 
         /// <summary>
+        /// Gets or sets the path to the path of the project to convert.
+        /// </summary>
+        public string ProjectPath { get; set; }
+
+        /// <summary>
         /// Gets or sets the path to the assembly in case a semantic model is needed.
         /// </summary>
         public string AssemblyPath { get; set; }
@@ -76,6 +81,7 @@ namespace Rosetta.Executable
                 FileName = this.FileName?.Clone() as string,
                 Extension = this.Extension?.Clone() as string,
                 FilePath = this.FilePath?.Clone() as string,
+                ProjectPath = this.ProjectPath?.Clone() as string,
                 AssemblyPath = this.AssemblyPath?.Clone() as string,
                 Directory = this.Directory?.Clone() as string,
                 OutputDirectory = this.OutputDirectory?.Clone() as string,
