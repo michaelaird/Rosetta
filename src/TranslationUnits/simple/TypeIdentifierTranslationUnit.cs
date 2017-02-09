@@ -86,10 +86,12 @@ namespace Rosetta.Translation
 
         private static string ValidateName(string name)
         {
-            if (name.Contains(" "))
-            {
-                throw new ArgumentException("Type names cannot contain spaces", nameof(name));
-            }
+
+            //Scott: I'm commenting this out because I'm passing the field variable declaration into the type
+            //if (name.Contains(" "))
+            //{
+            //    throw new ArgumentException("Type names cannot contain spaces", nameof(name));
+            //}
 
             return name;
         }

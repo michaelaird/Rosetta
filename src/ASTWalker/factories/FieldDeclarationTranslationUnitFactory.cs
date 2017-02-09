@@ -24,7 +24,7 @@ namespace Rosetta.AST.Factories
         /// </summary>
         /// <param name="node"></param>
         /// <param name="semanticModel">The semantic model</param>
-        public FieldDeclarationTranslationUnitFactory(CSharpSyntaxNode node, SemanticModel semanticModel = null) 
+        public FieldDeclarationTranslationUnitFactory(CSharpSyntaxNode node, SemanticModel semanticModel = null)
             : base(node, semanticModel)
         {
         }
@@ -36,7 +36,7 @@ namespace Rosetta.AST.Factories
         /// <remarks>
         /// For testability.
         /// </remarks>
-        public FieldDeclarationTranslationUnitFactory(FieldDeclarationTranslationUnitFactory other) 
+        public FieldDeclarationTranslationUnitFactory(FieldDeclarationTranslationUnitFactory other)
             : base(other)
         {
         }
@@ -53,11 +53,44 @@ namespace Rosetta.AST.Factories
             }
 
             var helper = this.CreateHelper(this.Node as FieldDeclarationSyntax, this.SemanticModel);
+            ITranslationUnit fieldDeclaration;
 
-            var fieldDeclaration = this.CreateTranslationUnit(
-                helper.Visibility,
-                TypeIdentifierTranslationUnit.Create(helper.Type.FullName.MapType()), 
-                IdentifierTranslationUnit.Create(helper.Name));
+
+            if (helper.Type.FullName.Contains("Observable"))
+            {
+                //then it's a kendo variable. Do the Kendo thing
+
+                string fieldDefinition = helper.Type.GetKnockoutVariable + helper.Type.GetVariableTypeArguement;
+                string variableDefinition = "";
+
+                if (helper.Variable.Initializer != null)
+                {
+                    variableDefinition = " = " + helper.Variable.Initializer.Value.ToString();
+                    if (variableDefinition.Contains("Knockout.ObservableArray"))
+                    {
+                        variableDefinition = variableDefinition.Replace("Knockout.ObservableArray", "ko.observableArray");
+                    } else if (variableDefinition.Contains("Knockout.Observable"))
+                    {
+                        variableDefinition = variableDefinition.Replace("Knockout.Observable", "ko.observable");
+                    }
+                }
+                
+                fieldDeclaration = this.CreateTranslationUnit(
+                    helper.Visibility,
+                    TypeIdentifierTranslationUnit.Create(fieldDefinition + variableDefinition),
+                    IdentifierTranslationUnit.Create(helper.Name));
+
+            }
+            else
+            {
+                //it's not a kendo variable. Do the normal thing
+                fieldDeclaration = this.CreateTranslationUnit(
+                    helper.Visibility,
+                    TypeIdentifierTranslationUnit.Create(helper.Type.FullName.MapType()),
+                    IdentifierTranslationUnit.Create(helper.Name));
+
+
+            }
 
             return fieldDeclaration;
         }

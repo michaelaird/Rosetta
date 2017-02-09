@@ -45,6 +45,7 @@ namespace Rosetta.AST.Helpers
             {
                 return this.VariableDeclarationSyntaxNode.Variables.Select(
                     variableDeclarator => variableDeclarator.Identifier.ValueText).ToArray();
+
             }
         }
 
@@ -55,6 +56,19 @@ namespace Rosetta.AST.Helpers
         /// Might be null.
         /// </remarks>
         public virtual TypeReference Type => new TypeReference(this.VariableDeclarationSyntaxNode.Type, this.SemanticModel);
+
+
+        /// <summary>
+        /// Gets the variable initializer
+        /// </summary>
+        /// 
+        public VariableDeclaratorSyntax GetVariableInit
+        {
+            get
+            {
+                return this.VariableDeclarationSyntaxNode.Variables[0];
+            }
+        }
 
         /// <summary>
         /// Gets the expression representing the assignment values.
@@ -71,6 +85,7 @@ namespace Rosetta.AST.Helpers
                     null : variableDeclarator.Initializer.Value).ToArray();
             }
         }
+
 
         protected VariableDeclarationSyntax VariableDeclarationSyntaxNode
         {

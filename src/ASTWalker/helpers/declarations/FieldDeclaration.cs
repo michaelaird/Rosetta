@@ -73,6 +73,11 @@ namespace Rosetta.AST.Helpers
         /// </summary>
         public virtual TypeReference Type => this.VariableDeclaration.Type;
 
+        /// <summary>
+        /// Gets the initialization of the variable.
+        /// </summary>
+        public virtual VariableDeclaratorSyntax Variable => this.VariableDeclaration.GetVariableInit;
+
         protected VariableDeclaration VariableDeclaration
         {
             get

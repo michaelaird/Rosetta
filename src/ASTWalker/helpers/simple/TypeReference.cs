@@ -116,6 +116,66 @@ namespace Rosetta.AST.Helpers
         }
 
         /// <summary>
+        /// Converts the type to the typescript implementation of knockout.
+        /// </summary>
+        public virtual string GetKnockoutVariable
+        {
+            get
+            {
+                var simpleNameSyntaxNode = this.TypeSyntaxNode as SimpleNameSyntax;
+                string variable = "";
+
+                if (simpleNameSyntaxNode.Identifier.ValueText == "Observable")
+                {
+                    variable = "KnockoutObservable";
+                }
+                else if (simpleNameSyntaxNode.Identifier.ValueText == "ObservableArray")
+                {
+                    variable = "KnockoutObservableArray"; 
+                }
+                else if (simpleNameSyntaxNode.Identifier.ValueText == "DependentObservable")
+                {
+                    variable = "KnockoutComputed";
+                }
+                else
+                {
+                    variable = simpleNameSyntaxNode.Identifier.ValueText;
+                }
+
+                return variable;
+            }
+        }
+
+        /// <summary>
+        /// Returns the variable type argument
+        /// </summary>
+        public virtual string GetVariableTypeArguement
+        {
+            get
+            {
+                var simpleNameSyntaxNode = this.TypeSyntaxNode as SimpleNameSyntax;
+                return simpleNameSyntaxNode.ToString().Substring(simpleNameSyntaxNode.ToString().IndexOf("<"));
+            }
+        }
+
+
+        /// <summary>
+        /// Gets the variable declaration
+        /// </summary>
+        public virtual string GetVariableDeclaration
+        {
+            get
+            {
+                var simpleNameSyntaxNode = this.TypeSyntaxNode as SimpleNameSyntax;
+
+                string stringSimpleName = simpleNameSyntaxNode.ToString();
+                int startindex = stringSimpleName.IndexOf("<");
+
+                return simpleNameSyntaxNode.Identifier.ValueText + stringSimpleName.Substring(startindex);
+            }
+        }
+
+        /// <summary>
         /// Gets the type name.
         /// </summary>
         public string Name
