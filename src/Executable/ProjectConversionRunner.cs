@@ -75,17 +75,25 @@ namespace Rosetta.Executable
 
         protected virtual void PrepareFiles()
         {
-            Project project = new Project(this.arguments.ProjectPath);
-
-            var allfiles = project.GetItems("Compile").ToList();
-
-
-            foreach (var projectItem in allfiles)
+            foreach (string f in Directory.GetFiles(this.arguments.ProjectPath))
             {
-                string fullPath = FileManager.ExtractDirectoryPathFromFilePath(projectItem.Project.FullPath) + "\\" +
-                projectItem.UnevaluatedInclude;
-                fileManager.AddFile(fullPath); // TODO: arguments have all which is required, change signature
+                fileManager.AddFile(f);
             }
+
+
+            //Project project = new Project("C:\\Projects\\Rosetta-master\\BBTest\\TestFolder\\");
+
+            //Project project1 = new Project(this.arguments.ProjectPath);
+
+            //var allfiles = project.GetItems("Compile").ToList();
+
+
+            //foreach (var projectItem in allfiles)
+            //{
+            //    string fullPath = FileManager.ExtractDirectoryPathFromFilePath(projectItem.Project.FullPath) + "\\" +
+            //    projectItem.UnevaluatedInclude;
+            //    fileManager.AddFile(fullPath); // TODO: arguments have all which is required, change signature
+            //}
             
         }
 
@@ -191,7 +199,7 @@ namespace Rosetta.Executable
                     throw new ArgumentNullException(nameof(this.arguments.Extension));
                 }
 
-                if (this.arguments.ProjectPath != null && !File.Exists(this.arguments.ProjectPath))
+                if (this.arguments.ProjectPath != null && !Directory.Exists(this.arguments.ProjectPath))
                 {
                     throw new ArgumentException("Invalid path!", nameof(this.arguments.ProjectPath));
                 }
