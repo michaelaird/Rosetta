@@ -140,7 +140,7 @@ namespace Rosetta.Translation
                     // [var ]<name> : <type>
                     writer.Write("{0}{1} {2} {3}",
                         text => ClassDeclarationCodePerfect.RefineDeclaration(text),
-                        this.shouldRenderDeclarationKeyword ? Lexems.VariableDeclaratorKeyword + " " : string.Empty,
+                        this.shouldRenderDeclarationKeyword ? "let " : string.Empty,
                         this.names[0].Translate(),
                         Lexems.Colon,
                         this.type.Translate());
@@ -150,7 +150,7 @@ namespace Rosetta.Translation
                     // [var ]<name> : <type> = <expression>
                     writer.Write("{0}{1} {2} {3} {4} {5}",
                         text => ClassDeclarationCodePerfect.RefineDeclaration(text),
-                        this.shouldRenderDeclarationKeyword ? Lexems.VariableDeclaratorKeyword + " " : string.Empty,
+                        this.shouldRenderDeclarationKeyword ? "let " : string.Empty,
                         this.names[0].Translate(),
                         Lexems.Colon,
                         this.type.Translate(),

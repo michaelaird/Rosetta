@@ -112,6 +112,8 @@ namespace Rosetta.Translation
                 throw new ArgumentNullException(nameof(format));
             }
 
+            string escapedProcessedString = "";
+
             // Argument `format` will contain a format-pattern
             // thus, it is possible that the formatting fails because of curly brackets
             // like in `public void MyMethod() { /* something */ }`
@@ -119,7 +121,17 @@ namespace Rosetta.Translation
             //                                                   |- And this!
             //
             // Spaces must be propagated across multiple lines
-            var escapedProcessedString = string.Format(EscapeInputFormat(format), arg);
+            if (arg.Length > 0)
+            {
+                //original unchanged path
+                escapedProcessedString = string.Format(EscapeInputFormat(format), arg);
+            }
+            else
+            {
+                //created this path when the file being converted contains a string.format, which was causing the original path to error out.
+                escapedProcessedString = format;
+            }
+            
             var lines = GetAllLinesInString(escapedProcessedString);
             var formattedLines = lines.Select(item => this.formatter.FormatLine(item)).ToArray();
             var singleLine = AllLinesIntoOneString(formattedLines);

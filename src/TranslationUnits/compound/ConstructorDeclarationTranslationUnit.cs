@@ -77,8 +77,7 @@ namespace Rosetta.Translation
             };
 
             // Opening declaration: <visibility> constructor(<params>) {
-            writer.WriteLine("{0}{1}{2} {3}",
-                this.Visibility.ConvertToTypeScriptEquivalent().EmitOptionalVisibility(),
+            writer.WriteLine("{0}{1} {2}",
                 Lexems.ConstructorKeyword,
                 SyntaxUtility.ToBracketEnclosedList(this.Arguments.Select(unit => unit.Translate())),
                 Lexems.OpenCurlyBracket);
