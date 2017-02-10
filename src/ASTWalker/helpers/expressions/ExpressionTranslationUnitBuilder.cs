@@ -127,8 +127,7 @@ namespace Rosetta.AST.Helpers
                     }
                     return BuildParenthesizedExpressionTranslationUnit(parenthesizedExpression, this.semanticModel);
 
-                // Member access expressions
-                // commenting this out so that it faults under the default
+                    // Member access expressions
                 //case SyntaxKind.SimpleMemberAccessExpression:
                 //    var memberAccessExpression = this.node as MemberAccessExpressionSyntax;
                 //    if (memberAccessExpression == null)
@@ -378,7 +377,32 @@ namespace Rosetta.AST.Helpers
         {
             //SyntaxToken token = expression.Token;
 
-            return DefaultTranslationUnit.Create(expression.ToString());
+            string expressionString = expression.ToString();
+
+
+            //The below two are for non-array knockout elements
+            if (expressionString.Contains(".SetValue"))
+            {
+                expressionString = expressionString.Replace(".SetValue", "");
+            }
+
+            if (expressionString.Contains(".GetValue"))
+            {
+                expressionString = expressionString.Replace(".GetValue", "");
+            }
+
+            //the below two are for array knockout elements
+            if (expressionString.Contains(".SetItems"))
+            {
+                expressionString = expressionString.Replace(".SetItems", "");
+            }
+
+            if (expressionString.Contains(".GetItems"))
+            {
+                expressionString = expressionString.Replace(".GetItems", "");
+            }
+
+            return DefaultTranslationUnit.Create(expressionString);
 
             //switch (token.Kind())
             //{
