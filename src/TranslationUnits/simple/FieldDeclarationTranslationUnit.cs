@@ -73,12 +73,12 @@ namespace Rosetta.Translation
             // Opening declaration
             string fieldVisibility = this.RenderedVisibilityModifier;
 
-            writer.Write("{0}{1} {2} {3}",
+            writer.Write("{0}{1} {2} {3}{4}",
                 text => ClassDeclarationCodePerfect.RefineDeclaration(text),
                 this.Visibility.ConvertToTypeScriptEquivalent().EmitOptionalVisibility(),
                 this.RenderedName,
                 Lexems.Colon,
-                this.type.Translate());
+                this.type.Translate(), Lexems.Newline);
 
             return writer.ToString();
         }

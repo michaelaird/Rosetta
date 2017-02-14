@@ -195,7 +195,7 @@ namespace Rosetta.Translation
             // Translating members first
             foreach (ITranslationUnit translationUnit in this.memberDeclarations)
             {
-                writer.WriteLine("{0}{1}", translationUnit.Translate(), Lexems.Semicolon);
+                writer.WriteLine("{0}{1}{2}", translationUnit.Translate(), Lexems.Semicolon, Lexems.Newline);
             }
 
             // Adding a newline
