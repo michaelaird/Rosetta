@@ -16,18 +16,18 @@ namespace Rosetta.AST
     /// <summary>
     /// Describes walkers in iterative statements.
     /// </summary>
-    public class ForEachStatementASTWalker : StatementASTWalker
+    public class ForStatementASTWalker : StatementASTWalker
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ForEachStatementASTWalker"/> class.
+        /// Initializes a new instance of the <see cref="ForStatementASTWalker"/> class.
         /// </summary>
         /// <param name="node"></param>
         /// <param name="conditionalStatement"></param>
         /// <param name="semanticModel">The semantic model.</param>
-        protected ForEachStatementASTWalker(CSharpSyntaxNode node, ForEachStatementTranslationUnit forEachStatement, SemanticModel semanticModel) 
+        protected ForStatementASTWalker(CSharpSyntaxNode node, ForStatementTranslationUnit forStatement, SemanticModel semanticModel) 
             : base(node, semanticModel)
         {
-            var statementSyntaxNode = node as ForEachStatementSyntax;
+            var statementSyntaxNode = node as ForStatementSyntax;
             if (statementSyntaxNode == null)
             {
                 throw new ArgumentException(
@@ -35,43 +35,43 @@ namespace Rosetta.AST
                     typeof(ForStatementSyntax).Name));
             }
 
-            if (forEachStatement == null)
+            if (forStatement == null)
             {
-                throw new ArgumentNullException(nameof(forEachStatement));
+                throw new ArgumentNullException(nameof(forStatement));
             }
 
             // Node assigned in base, no need to assign it here
-            this.statement = forEachStatement;
+            this.statement = forStatement;
 
             // Going through parts in the statement and filling the translation unit with initial data
             this.VisitNode(statementSyntaxNode, 0);
         }
 
         /// <summary>
-        /// Copy initializes a new instance of the <see cref="ForEachStatementASTWalker"/> class.
+        /// Copy initializes a new instance of the <see cref="ForStatementASTWalker"/> class.
         /// </summary>
         /// <param name="other"></param>
         /// <remarks>
         /// For testability.
         /// </remarks>
-        public ForEachStatementASTWalker(ForEachStatementASTWalker other)
+        public ForStatementASTWalker(ForStatementASTWalker other)
             : base(other)
         {
         }
 
         /// <summary>
-        /// Factory method for class <see cref="ForEachStatementASTWalker"/>.
+        /// Factory method for class <see cref="ForStatementASTWalker"/>.
         /// </summary>
         /// <param name="node"><see cref="CSharpSyntaxNode"/> Used to initialize the walker.</param>
         /// <param name="semanticModel">The semantic model.</param>
         /// <returns></returns>
-        public static ForEachStatementASTWalker Create(CSharpSyntaxNode node, SemanticModel semanticModel = null)
+        public static ForStatementASTWalker Create(CSharpSyntaxNode node, SemanticModel semanticModel = null)
         {
-            ForEachStatement helper = new ForEachStatement(node as ForEachStatementSyntax);
+            ForStatement helper = new ForStatement(node as ForStatementSyntax);
 
-            var statement = ForEachStatementTranslationUnit.Create();
+            var statement = ForStatementTranslationUnit.Create();
 
-            return new ForEachStatementASTWalker(node, statement, semanticModel);
+            return new ForStatementASTWalker(node, statement, semanticModel);
         }
 
         /// <summary>
@@ -79,11 +79,12 @@ namespace Rosetta.AST
         /// </summary>
         /// <param name="node"></param>
         /// <param name="index"></param>
-        private void VisitNode(ForEachStatementSyntax node, int index)
+        private void VisitNode(ForStatementSyntax node, int index)
         {
-            //Passing through strings makes it a little easier to initialize the lambda 'foreach' statement.
-            string[] forEachExpression = new string[3] { node.Type.ToString(), node.Identifier.ValueText, node.Expression.ToString() } ;
-            this.Statement.SetForEachExpression(forEachExpression);
+            //for condition
+            this.Statement.SetForExpression(
+                new ExpressionTranslationUnitBuilder(node.Condition, this.semanticModel).Build());
+
 
             // Handling body
             IASTWalker walker = (node.Statement as BlockSyntax != null) ? 
@@ -94,11 +95,11 @@ namespace Rosetta.AST
         }
 
         /// <summary>
-        /// Gets the <see cref="ForEachStatementTranslationUnit"/> associated to the AST walker.
+        /// Gets the <see cref="ForStatementTranslationUnit"/> associated to the AST walker.
         /// </summary>
-        protected ForEachStatementTranslationUnit Statement
+        protected ForStatementTranslationUnit Statement
         {
-            get { return this.statement as ForEachStatementTranslationUnit; }
+            get { return this.statement as ForStatementTranslationUnit; }
         }
     }
 }

@@ -97,6 +97,8 @@ namespace Rosetta.AST
         /// <param name="index"></param>
         private void VisitNode(IfStatementSyntax node, int index)
         {
+
+
             // Handling conditional expression
             this.Statement.SetTestExpression(
                 new ExpressionTranslationUnitBuilder(node.Condition, this.semanticModel).Build(), 

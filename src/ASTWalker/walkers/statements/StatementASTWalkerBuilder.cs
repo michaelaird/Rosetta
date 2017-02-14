@@ -57,8 +57,10 @@ namespace Rosetta.AST
                 case SyntaxKind.ForEachStatement:
                     return ForEachStatementASTWalker.Create(this.node, this.semanticModel);
 
-                case SyntaxKind.FixedStatement:
                 case SyntaxKind.ForStatement:
+                    return ForStatementASTWalker.Create(this.node, this.semanticModel);
+
+                case SyntaxKind.FixedStatement:
                 case SyntaxKind.GlobalStatement:
                 case SyntaxKind.GotoCaseStatement:
                 case SyntaxKind.GotoDefaultStatement:

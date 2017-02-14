@@ -148,6 +148,7 @@
     <Compile Include="helpers\simple\AttributeLists.cs" />
     <Compile Include="helpers\simple\AttributeSemantics.cs" />
     <Compile Include="helpers\simple\TypeReference.cs" />
+    <Compile Include="helpers\statements\ForStatement.cs" />
     <Compile Include="helpers\statements\ForEachStatement.cs" />
     <Compile Include="helpers\statements\ExpressionStatement.cs" />
     <Compile Include="helpers\statements\ReturnStatement.cs" />
@@ -183,6 +184,7 @@
     <Compile Include="walkers\NamespaceASTWalker.cs" />
     <Compile Include="walkers\ProgramASTWalker.cs" />
     <Compile Include="walkers\PropertyASTWalker.cs" />
+    <Compile Include="walkers\statements\ForStatementASTWalker.cs" />
     <Compile Include="walkers\statements\ForEachStatementASTWalker.cs" />
     <Compile Include="walkers\statements\ConditionalStatementASTWalker.cs" />
     <Compile Include="walkers\statements\ExpressionStatementASTWalker.cs" />
