@@ -122,27 +122,37 @@ namespace Rosetta.AST.Helpers
         {
             get
             {
-                var simpleNameSyntaxNode = this.TypeSyntaxNode as SimpleNameSyntax;
-                string variable = "";
+                if (this.SyntaxNode is ArrayTypeSyntax)
+                {
+                    var arrayTypeSyntaxNode = this.SyntaxNode as ArrayTypeSyntax;
+                    string variable = "BLABLABLALBABA";
 
-                if (simpleNameSyntaxNode.Identifier.ValueText == "Observable")
-                {
-                    variable = "KnockoutObservable";
-                }
-                else if (simpleNameSyntaxNode.Identifier.ValueText == "ObservableArray")
-                {
-                    variable = "KnockoutObservableArray"; 
-                }
-                else if (simpleNameSyntaxNode.Identifier.ValueText == "DependentObservable")
-                {
-                    variable = "KnockoutComputed";
+                    return variable;
                 }
                 else
                 {
-                    variable = simpleNameSyntaxNode.Identifier.ValueText;
-                }
+                    var simpleNameSyntaxNode = this.TypeSyntaxNode as SimpleNameSyntax;
+                    string variable = "";
 
-                return variable;
+                    if (simpleNameSyntaxNode.Identifier.ValueText == "Observable")
+                    {
+                        variable = "KnockoutObservable";
+                    }
+                    else if (simpleNameSyntaxNode.Identifier.ValueText == "ObservableArray")
+                    {
+                        variable = "KnockoutObservableArray";
+                    }
+                    else if (simpleNameSyntaxNode.Identifier.ValueText == "DependentObservable")
+                    {
+                        variable = "KnockoutComputed";
+                    }
+                    else
+                    {
+                        variable = simpleNameSyntaxNode.Identifier.ValueText;
+                    }
+
+                    return variable;
+                }
             }
         }
 
@@ -153,7 +163,7 @@ namespace Rosetta.AST.Helpers
         {
             get
             {
-                var simpleNameSyntaxNode = this.TypeSyntaxNode as SimpleNameSyntax;
+                var simpleNameSyntaxNode = this.TypeSyntaxNode as TypeSyntax;
                 return simpleNameSyntaxNode.ToString().Substring(simpleNameSyntaxNode.ToString().IndexOf("<"));
             }
         }

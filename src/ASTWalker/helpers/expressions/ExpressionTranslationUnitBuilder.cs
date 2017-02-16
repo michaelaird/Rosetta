@@ -272,6 +272,9 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.StringLiteralToken:
                     return LiteralTranslationUnit<string>.Create((string)token.Value);
 
+                case SyntaxKind.CharacterLiteralToken:
+                    return LiteralTranslationUnit<char>.Create((char)token.Value);
+
                 case SyntaxKind.CharacterLiteralExpression:
                     return null;
 
