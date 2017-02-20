@@ -192,6 +192,7 @@
     <Compile Include="walkers\statements\LocalDeclarationStatementASTWalker.cs" />
     <Compile Include="walkers\statements\StatementASTWalker.cs" />
     <Compile Include="walkers\statements\StatementASTWalkerBuilder.cs" />
+    <Compile Include="walkers\statements\SwitchStatementASTWalker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
