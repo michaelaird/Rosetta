@@ -5,12 +5,8 @@
 
 namespace Rosetta.AST.Helpers
 {
-    using System;
     using Microsoft.CodeAnalysis;
-    using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-    using Rosetta.Translation;
 
     /// <summary>
     /// Helper for accessing member access expressions in AST.
@@ -41,7 +37,20 @@ namespace Rosetta.AST.Helpers
         /// </summary>
         public string MemberName
         {
-            get { return this.MemberAccessExpressionSyntaxNode.Name.Identifier.ValueText; }
+            get
+            {
+                switch (this.MemberAccessExpressionSyntaxNode.Name.Identifier.ValueText)
+                {
+                    case "ObservableArray":
+                        return "observableArray";
+
+                    case "Observable":
+                        return "observable";
+
+                    default:
+                        return this.MemberAccessExpressionSyntaxNode.Name.Identifier.ValueText;
+                }
+            }
         }
 
         private MemberAccessExpressionSyntax MemberAccessExpressionSyntaxNode

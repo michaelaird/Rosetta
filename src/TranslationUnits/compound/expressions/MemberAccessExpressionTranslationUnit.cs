@@ -13,6 +13,7 @@ namespace Rosetta.Translation
     /// </summary>
     public class MemberAccessExpressionTranslationUnit : ExpressionTranslationUnit, ICompoundTranslationUnit
     {
+        private ITranslationUnit left;
         private ITranslationUnit member;
         private MemberAccessMethod accessMethod;
 
@@ -36,7 +37,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="member"></param>
         /// <param name="accessMethod"></param>
@@ -55,8 +56,21 @@ namespace Rosetta.Translation
             };
         }
 
+        public static MemberAccessExpressionTranslationUnit Create(ITranslationUnit left, ITranslationUnit member)
+        {
+            if (left == null)
+            {
+                throw new ArgumentNullException(nameof(member));
+            }
+
+            var unit = MemberAccessExpressionTranslationUnit.Create(member, MemberAccessMethod.Member);
+            unit.left = left;
+
+            return unit;
+        }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public IEnumerable<ITranslationUnit> InnerUnits
         {
@@ -100,16 +114,21 @@ namespace Rosetta.Translation
             set { this.member = value; }
         }
 
-        #endregion
+        #endregion Compound translation unit methods
 
-        private static string MemberAccessMethod2String(MemberAccessMethod accessMethod)
+        private string MemberAccessMethod2String(MemberAccessMethod accessMethod)
         {
             switch (accessMethod)
             {
                 case MemberAccessMethod.Base:
                     return Lexems.BaseKeyword;
+
                 case MemberAccessMethod.This:
                     return Lexems.ThisKeyword;
+
+                case MemberAccessMethod.Member:
+                    return left.Translate();
+
                 default:
                     return string.Empty;
             }
@@ -123,21 +142,26 @@ namespace Rosetta.Translation
         public enum MemberAccessMethod
         {
             /// <summary>
-            /// 
+            ///
             /// </summary>
             This,
 
             /// <summary>
-            /// 
+            ///
             /// </summary>
             Base,
 
             /// <summary>
-            /// 
+            ///
+            /// </summary>
+            Member,
+
+            /// <summary>
+            ///
             /// </summary>
             None
         }
 
-        #endregion
+        #endregion Types
     }
 }

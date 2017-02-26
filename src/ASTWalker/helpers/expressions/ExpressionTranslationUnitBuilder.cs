@@ -5,15 +5,14 @@
 
 namespace Rosetta.AST.Helpers
 {
-    using System;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-
     using Rosetta.Translation;
+    using System;
 
     /// <summary>
-    /// Builder responsible for creating the correct <see cref="ITranslationUnit"/> 
+    /// Builder responsible for creating the correct <see cref="ITranslationUnit"/>
     /// from an expression syntax node.
     /// This is the main entry point for whatever AST walker which needs to create an expression.
     /// </summary>
@@ -91,7 +90,6 @@ namespace Rosetta.AST.Helpers
                     }
                     return BuildLiteralExpressionTranslationUnit(literalExpression, this.semanticModel);
 
-
                 //case SyntaxKind.IdentifierName:
                 case SyntaxKind.GenericName:
                 case SyntaxKind.IdentifierName:
@@ -127,14 +125,14 @@ namespace Rosetta.AST.Helpers
                     }
                     return BuildParenthesizedExpressionTranslationUnit(parenthesizedExpression, this.semanticModel);
 
-                    // Member access expressions
-                //case SyntaxKind.SimpleMemberAccessExpression:
-                //    var memberAccessExpression = this.node as MemberAccessExpressionSyntax;
-                //    if (memberAccessExpression == null)
-                //    {
-                //        throw new InvalidCastException("Unable to correctly cast expected member access expression to member access expression!");
-                //    }
-                //    return BuildMemberAccessExpressionTranslationUnit(memberAccessExpression, this.semanticModel);
+                // Member access expressions
+                case SyntaxKind.SimpleMemberAccessExpression:
+                    var memberAccessExpression = this.node as MemberAccessExpressionSyntax;
+                    if (memberAccessExpression == null)
+                    {
+                        throw new InvalidCastException("Unable to correctly cast expected member access expression to member access expression!");
+                    }
+                    return BuildMemberAccessExpressionTranslationUnit(memberAccessExpression, this.semanticModel);
 
                 // Assignment expressions
                 case SyntaxKind.AddAssignmentExpression:
@@ -178,18 +176,23 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.AddExpression:
                     token = OperatorToken.Addition;
                     break;
+
                 case SyntaxKind.MultiplyExpression:
                     token = OperatorToken.Multiplication;
                     break;
+
                 case SyntaxKind.DivideExpression:
                     token = OperatorToken.Divide;
                     break;
+
                 case SyntaxKind.SubtractExpression:
                     token = OperatorToken.Subtraction;
                     break;
+
                 case SyntaxKind.EqualsExpression:
                     token = OperatorToken.LogicalEquals;
                     break;
+
                 case SyntaxKind.NotEqualsExpression:
                     token = OperatorToken.NotEquals;
                     break;
@@ -216,9 +219,11 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.PreIncrementExpression:
                     token = OperatorToken.Increment;
                     break;
+
                 case SyntaxKind.PreDecrementExpression:
                     token = OperatorToken.Decrement;
                     break;
+
                 case SyntaxKind.LogicalNotExpression:
                     token = OperatorToken.LogicalNot;
                     break;
@@ -244,6 +249,7 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.PostIncrementExpression:
                     token = OperatorToken.Increment;
                     break;
+
                 case SyntaxKind.PostDecrementExpression:
                     token = OperatorToken.Decrement;
                     break;
@@ -299,30 +305,60 @@ namespace Rosetta.AST.Helpers
 
         private static ITranslationUnit BuildMemberAccessExpressionTranslationUnit(MemberAccessExpressionSyntax expression, SemanticModel semanticModel)
         {
-            var thisExpression = expression.Expression as ThisExpressionSyntax;
-            var baseExpression = expression.Expression as BaseExpressionSyntax;
-
             var helper = new MemberAccessExpression(expression, semanticModel);
 
-            if (thisExpression != null)
+            //translate these Knockout-specific statements
+            if ("SetValue".Equals(helper.MemberName)
+                || "GetValue".Equals(helper.MemberName)
+                || "SetItems".Equals(helper.MemberName)
+                || "GetItems".Equals(helper.MemberName))
+            {
+                return new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build();
+            }
+
+            if (expression.Expression is ThisExpressionSyntax)
             {
                 return MemberAccessExpressionTranslationUnit.Create(
                     IdentifierTranslationUnit.Create(helper.MemberName),
                     MemberAccessExpressionTranslationUnit.MemberAccessMethod.This);
             }
-
-            if (baseExpression != null)
+            else if (expression.Expression is BaseExpressionSyntax)
             {
                 return MemberAccessExpressionTranslationUnit.Create(
                     IdentifierTranslationUnit.Create(helper.MemberName),
                     MemberAccessExpressionTranslationUnit.MemberAccessMethod.Base);
             }
+            else if (expression.Expression is IdentifierNameSyntax)
+            {
+                // The target is a simple identifier, the code being analysed is of the form
+                // "command.ExecuteReader()" and memberAccess.Expression is the "command"
+                // node
+                return MemberAccessExpressionTranslationUnit.Create(
+                   new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.MemberName));
+            }
+            else if (expression.Expression is InvocationExpressionSyntax)
+            {
+                // The target is another invocation, the code being analysed is of the form
+                // "GetCommand().ExecuteReader()" and memberAccess.Expression is the
+                // "GetCommand()" node
+                return MemberAccessExpressionTranslationUnit.Create(
+                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.MemberName));
+            }
+            else if (expression.Expression is MemberAccessExpressionSyntax)
+            {
+                // The target is a member access, the code being analysed is of the form
+                // "x.Command.ExecuteReader()" and memberAccess.Expression is the "x.Command"
+                // node
+                return MemberAccessExpressionTranslationUnit.Create(
+                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.MemberName));
+            }
 
             return MemberAccessExpressionTranslationUnit.Create(
                 IdentifierTranslationUnit.Create(helper.MemberName),
                 MemberAccessExpressionTranslationUnit.MemberAccessMethod.This);
-
-//            throw new InvalidOperationException("Cannot build a member access expression as it is not a `this` expression, nor a `base` expression!");
         }
 
         private static ITranslationUnit BuildAssignmentExpressionTranslationUnit(AssignmentExpressionSyntax expression, SemanticModel semanticModel)
@@ -382,29 +418,6 @@ namespace Rosetta.AST.Helpers
 
             string expressionString = expression.ToString();
 
-
-            //The below two are for non-array knockout elements
-            if (expressionString.Contains(".SetValue"))
-            {
-                expressionString = expressionString.Replace(".SetValue", "");
-            }
-
-            if (expressionString.Contains(".GetValue"))
-            {
-                expressionString = expressionString.Replace(".GetValue", "");
-            }
-
-            //the below two are for array knockout elements
-            if (expressionString.Contains(".SetItems"))
-            {
-                expressionString = expressionString.Replace(".SetItems", "");
-            }
-
-            if (expressionString.Contains(".GetItems"))
-            {
-                expressionString = expressionString.Replace(".GetItems", "");
-            }
-
             return DefaultTranslationUnit.Create(expressionString);
 
             //switch (token.Kind())
@@ -429,6 +442,6 @@ namespace Rosetta.AST.Helpers
             throw new InvalidOperationException(string.Format("Default Expression has failed!"));
         }
 
-        #endregion
+        #endregion Builder methods
     }
 }

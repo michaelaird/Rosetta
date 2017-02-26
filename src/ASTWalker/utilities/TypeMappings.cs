@@ -53,12 +53,16 @@ namespace Rosetta.AST.Utilities
 
             if (IsKnockoutObservable(originalType))
             {
-                return "ko.observable";
+                return "KnockoutObservable";
             }
 
             if (IsKnockoutObservableArray(originalType))
             {
-                return "ko.observableArray";
+            }
+
+            if (IsKnockoutComputedObservable(originalType))
+            {
+                return "KnockoutComputed";
             }
 
             if (IsObject(originalType))
@@ -94,8 +98,11 @@ namespace Rosetta.AST.Utilities
 
         private static bool IsObject(string originalType) => originalType == typeof(object).FullName || originalType.ToLower().Contains("object");
 
-        private static bool IsKnockoutObservable(string originalType) => originalType.Equals("Knockout.Observable");
+        private static bool IsKnockoutObservable(string originalType) => originalType.Equals("Observable");
 
-        private static bool IsKnockoutObservableArray(string originalType) => originalType.Equals("Knockout.ObservableArray");
+        private static bool IsKnockoutObservableArray(string originalType) => originalType.Equals("ObservableArray");
+
+        private static bool IsKnockoutComputedObservable(string originalType) => originalType.Equals("DependentObservable");
+        
     }
 }
