@@ -58,6 +58,7 @@ namespace Rosetta.AST.Utilities
 
             if (IsKnockoutObservableArray(originalType))
             {
+                return "KnockoutObservableArray";
             }
 
             if (IsKnockoutComputedObservable(originalType))
