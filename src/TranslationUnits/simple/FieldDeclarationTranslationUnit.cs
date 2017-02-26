@@ -13,6 +13,7 @@ namespace Rosetta.Translation
     public class FieldDeclarationTranslationUnit : MemberTranslationUnit, ITranslationUnit
     {
         private ITranslationUnit type;
+        protected ITranslationUnit[] expressions; // Can be null
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FieldDeclarationTranslationUnit"/> class.
@@ -31,6 +32,7 @@ namespace Rosetta.Translation
             : base(name, visibility)
         {
             this.Type = null;
+            this.expressions = null;
         }
 
         /// <summary>
@@ -40,7 +42,7 @@ namespace Rosetta.Translation
         /// <param name="type"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static FieldDeclarationTranslationUnit Create(VisibilityToken visibility, ITranslationUnit type, ITranslationUnit name)
+        public static FieldDeclarationTranslationUnit Create(VisibilityToken visibility, ITranslationUnit type, ITranslationUnit name, ITranslationUnit[] expressions = null)
         {
             if (type == null)
             {
@@ -55,7 +57,8 @@ namespace Rosetta.Translation
             {
                 Visibility = visibility,
                 Name = name,
-                Type = type
+                Type = type,
+                expressions = expressions
             };
         }
 
@@ -73,12 +76,26 @@ namespace Rosetta.Translation
             // Opening declaration
             string fieldVisibility = this.RenderedVisibilityModifier;
 
-            writer.Write("{0}{1} {2} {3}{4}",
+            if (this.Expression == null)
+            {
+                writer.Write("{0}{1} {2} {3}{4}",
                 text => ClassDeclarationCodePerfect.RefineDeclaration(text),
                 this.Visibility.ConvertToTypeScriptEquivalent().EmitOptionalVisibility(),
                 this.RenderedName,
                 Lexems.Colon,
                 this.type.Translate(), Lexems.Newline);
+            }
+            else
+            {
+                writer.Write("{0}{1} {2} {3} {4} {5}{6}",
+               text => ClassDeclarationCodePerfect.RefineDeclaration(text),
+               this.Visibility.ConvertToTypeScriptEquivalent().EmitOptionalVisibility(),
+               this.RenderedName,
+               Lexems.Colon,
+               this.type.Translate(),
+               Lexems.EqualsSign,
+               this.Expression.Translate(),Lexems.Newline);
+            }
 
             return writer.ToString();
         }
@@ -95,5 +112,13 @@ namespace Rosetta.Translation
         protected virtual string RenderedVisibilityModifier => TokenUtility.EmitOptionalVisibility(this.Visibility);
 
         protected virtual string RenderedName => this.Name.Translate();
+
+        /// <summary>
+        /// Until we support multiple declarations, we need to get the expression if it exists.
+        /// </summary>
+        private ITranslationUnit Expression
+        {
+            get { return this.expressions == null ? null : this.expressions[0]; }
+        }
     }
 }

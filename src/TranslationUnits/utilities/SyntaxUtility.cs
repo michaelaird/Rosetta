@@ -62,6 +62,20 @@ namespace Rosetta.Translation
         /// <param name="items"></param>
         /// <param name="includeSeparatorAtLast"></param>
         /// <returns></returns>
+        public static string ToAngleBracketEnclosedList(IEnumerable<string> items, bool includeSeparatorAtLast = false)
+        {
+            return string.Format("{1}{0}{2}",
+                ToTokenSeparatedList(items, Lexems.Comma + " ", includeSeparatorAtLast),
+                Lexems.OpenAngularBracket,
+                Lexems.CloseAngularBracket);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="items"></param>
+        /// <param name="includeSeparatorAtLast"></param>
+        /// <returns></returns>
         public static string ToNewlineSemicolonSeparatedList(IEnumerable<string> items, bool includeSeparatorAtLast = false)
         {
             return ToTokenSeparatedList(items, Lexems.Semicolon + Lexems.Newline, includeSeparatorAtLast);

@@ -24,7 +24,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -34,7 +34,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static TypeIdentifierTranslationUnit Void
         {
@@ -42,7 +42,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static TypeIdentifierTranslationUnit Number
         {
@@ -50,7 +50,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static TypeIdentifierTranslationUnit String
         {
@@ -58,7 +58,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static TypeIdentifierTranslationUnit Boolean
         {
@@ -66,7 +66,7 @@ namespace Rosetta.Translation
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public static TypeIdentifierTranslationUnit Any
         {
@@ -86,16 +86,14 @@ namespace Rosetta.Translation
 
         private static string ValidateName(string name)
         {
-
-            //Scott: I'm commenting this out because I'm passing the field variable declaration into the type
-            //if (name.Contains(" "))
-            //{
-            //    throw new ArgumentException("Type names cannot contain spaces", nameof(name));
-            //}
+            if (name.Contains(" "))
+            {
+                throw new ArgumentException("Type names cannot contain spaces", nameof(name));
+            }
 
             return name;
         }
 
-        #endregion
+        #endregion Validation
     }
 }

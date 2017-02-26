@@ -51,6 +51,16 @@ namespace Rosetta.AST.Utilities
                 return Lexems.BooleanType;
             }
 
+            if (IsKnockoutObservable(originalType))
+            {
+                return "ko.observable";
+            }
+
+            if (IsKnockoutObservableArray(originalType))
+            {
+                return "ko.observableArray";
+            }
+
             if (IsObject(originalType))
             {
                 return Lexems.AnyType;
@@ -83,5 +93,9 @@ namespace Rosetta.AST.Utilities
         private static bool IsBool(string originalType) => originalType == typeof(bool).FullName || originalType.ToLower().Contains("bool");
 
         private static bool IsObject(string originalType) => originalType == typeof(object).FullName || originalType.ToLower().Contains("object");
+
+        private static bool IsKnockoutObservable(string originalType) => originalType.Equals("Knockout.Observable");
+
+        private static bool IsKnockoutObservableArray(string originalType) => originalType.Equals("Knockout.ObservableArray");
     }
 }

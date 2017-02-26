@@ -78,7 +78,7 @@ namespace Rosetta.AST.Helpers
         /// </summary>
         public virtual VariableDeclaratorSyntax Variable => this.VariableDeclaration.GetVariableInit;
 
-        protected VariableDeclaration VariableDeclaration
+        public VariableDeclaration VariableDeclaration
         {
             get
             {
