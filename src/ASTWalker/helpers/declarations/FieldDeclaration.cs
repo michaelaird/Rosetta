@@ -103,6 +103,32 @@ namespace Rosetta.AST.Helpers
             return new VariableDeclaration(node, semanticModel);
         }
 
+        /// <summary>
+        /// Gets the field initializer
+        /// </summary>
+        /// 
+        public VariableDeclaratorSyntax GetVariableInit
+        {
+            get
+            {
+                return this.VariableDeclaration.GetVariableInit;
+            }
+        }
+
+        /// <summary>
+        /// Gets the expression representing the assignment values.
+        /// </summary>
+        /// <remarks>
+        /// Elements in the array might be null.
+        /// </remarks>
+        public ExpressionSyntax[] Expressions
+        {
+            get
+            {
+                return this.VariableDeclaration.Expressions;
+            }
+        }
+
         protected FieldDeclarationSyntax FieldDeclarationSyntaxNode
         {
             get { return this.SyntaxNode as FieldDeclarationSyntax; }

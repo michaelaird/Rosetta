@@ -5,14 +5,12 @@
 
 namespace Rosetta.AST.Factories
 {
-    using System;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
-
-    using Rosetta.Translation;
     using Rosetta.AST.Helpers;
     using Rosetta.AST.Utilities;
+    using Rosetta.Translation;
 
     /// <summary>
     /// Factory for <see cref="FieldDeclarationTranslationUnit"/>.
@@ -55,42 +53,16 @@ namespace Rosetta.AST.Factories
             var helper = this.CreateHelper(this.Node as FieldDeclarationSyntax, this.SemanticModel);
             ITranslationUnit fieldDeclaration;
 
+            ExpressionSyntax expression = helper.Expressions[0]; // This can contain null, so need to act accordingly
+            ITranslationUnit expressionTranslationUnit = expression == null
+                ? null
+                : new ExpressionTranslationUnitBuilder(expression, this.SemanticModel).Build();
 
-            if (helper.Type.FullName.Contains("Observable"))
-            {
-                //then it's a kendo variable. Do the Kendo thing
-
-                string fieldDefinition = helper.Type.GetKnockoutVariable + helper.Type.GetVariableTypeArguement;
-                string variableDefinition = "";
-
-                if (helper.Variable.Initializer != null)
-                {
-                    variableDefinition = " = " + helper.Variable.Initializer.Value.ToString();
-                    if (variableDefinition.Contains("Knockout.ObservableArray"))
-                    {
-                        variableDefinition = variableDefinition.Replace("Knockout.ObservableArray", "ko.observableArray");
-                    } else if (variableDefinition.Contains("Knockout.Observable"))
-                    {
-                        variableDefinition = variableDefinition.Replace("Knockout.Observable", "ko.observable");
-                    }
-                }
-                
-                fieldDeclaration = this.CreateTranslationUnit(
-                    helper.Visibility,
-                    TypeIdentifierTranslationUnit.Create(fieldDefinition + variableDefinition),
-                    IdentifierTranslationUnit.Create(helper.Name));
-
-            }
-            else
-            {
-                //it's not a kendo variable. Do the normal thing
-                fieldDeclaration = this.CreateTranslationUnit(
-                    helper.Visibility,
-                    TypeIdentifierTranslationUnit.Create(helper.Type.FullName.MapType()),
-                    IdentifierTranslationUnit.Create(helper.Name));
-
-
-            }
+            fieldDeclaration = this.CreateTranslationUnit(
+                helper.Visibility,
+                TypeIdentifierTranslationUnit.Create(helper.Type.FullName.MapType()),
+                IdentifierTranslationUnit.Create(helper.Name),
+                expressionTranslationUnit);
 
             return fieldDeclaration;
         }
@@ -113,7 +85,21 @@ namespace Rosetta.AST.Factories
         protected virtual ITranslationUnit CreateTranslationUnit(
             VisibilityToken visibility, ITranslationUnit type, ITranslationUnit name)
         {
-            return FieldDeclarationTranslationUnit.Create(visibility, type, name);
+            return FieldDeclarationTranslationUnit.Create(visibility, type, name, null);
+        }
+
+        /// <summary>
+        /// Creates the translation unit.
+        /// </summary>
+        /// <param name="visibility"></param>
+        /// <param name="type"></param>
+        /// <param name="name"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        protected virtual ITranslationUnit CreateTranslationUnit(
+            VisibilityToken visibility, ITranslationUnit type, ITranslationUnit name, ITranslationUnit expression)
+        {
+            return FieldDeclarationTranslationUnit.Create(visibility, type, name, expression == null ? null : new ITranslationUnit[] { expression });
         }
 
         /// <summary>
