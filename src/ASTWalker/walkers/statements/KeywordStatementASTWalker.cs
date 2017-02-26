@@ -33,7 +33,7 @@ namespace Rosetta.AST
             var breakSyntaxNode = node as BreakStatementSyntax;
             var continueSyntaxNode = node as ContinueStatementSyntax;
 
-            if (breakSyntaxNode == null || continueSyntaxNode == null)
+            if (breakSyntaxNode == null && continueSyntaxNode == null)
             {
                 throw new ArgumentException(
                     string.Format("Specified node is not one of these types: {0}, {1}!",

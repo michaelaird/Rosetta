@@ -5,11 +5,13 @@
 
 namespace Rosetta.AST.Helpers
 {
+    using Factories;
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Rosetta.Translation;
     using System;
+    using Utilities;
 
     /// <summary>
     /// Builder responsible for creating the correct <see cref="ITranslationUnit"/>
@@ -152,7 +154,13 @@ namespace Rosetta.AST.Helpers
                         throw new InvalidCastException("Unable to correctly cast expected assignment expression to assignment expression!");
                     }
                     return BuildAssignmentExpressionTranslationUnit(assignmentExpression, this.semanticModel);
-
+                case SyntaxKind.AnonymousMethodExpression:
+                    var anonymousMethodExpression = this.node as AnonymousMethodExpressionSyntax;
+                    if (anonymousMethodExpression == null)
+                    {
+                        throw new InvalidCastException("Unable to correctly cast expected anonymous method expression to anonymous method expression!");
+                    }
+                    return BuildAnonymousMethodExpressionTranslationUnit(anonymousMethodExpression, this.semanticModel);
                 default:
                     var defaultExpression = this.node as CSharpSyntaxNode;
                     if (defaultExpression == null)
@@ -164,6 +172,8 @@ namespace Rosetta.AST.Helpers
 
             throw new InvalidOperationException(string.Format("Cannot build an expression for node type {0}!", this.node.Kind()));
         }
+
+
 
         #region Builder methods
 
@@ -410,6 +420,15 @@ namespace Rosetta.AST.Helpers
             var helper = new IdentifierExpression(expression, semanticModel);
 
             return IdentifierTranslationUnit.Create(helper.Identifier);
+        }
+
+
+        private ITranslationUnit BuildAnonymousMethodExpressionTranslationUnit(AnonymousMethodExpressionSyntax anonymousMethodExpression, SemanticModel semanticModel)
+        {
+            var methodWalker = AnonymousMethodASTWalker.Create(node, new ASTWalkerContext(), this.semanticModel);
+            var translationUnit = methodWalker.Walk();
+
+            return translationUnit;
         }
 
         private static ITranslationUnit BuildDefaultExpressionTranslationUnit(CSharpSyntaxNode expression, SemanticModel semanticModel)
