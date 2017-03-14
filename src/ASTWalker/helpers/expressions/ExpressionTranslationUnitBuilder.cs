@@ -11,6 +11,7 @@ namespace Rosetta.AST.Helpers
     using Microsoft.CodeAnalysis.CSharp.Syntax;
     using Rosetta.Translation;
     using System;
+    using System.Reflection;
     using Utilities;
 
     /// <summary>
@@ -283,7 +284,19 @@ namespace Rosetta.AST.Helpers
             switch (token.Kind())
             {
                 case SyntaxKind.NumericLiteralToken:
-                    return LiteralTranslationUnit<int>.Create((int)token.Value);
+                    Type arg_type = token.Value.GetType();
+
+                    Type genericLiteralTranslationUnit = typeof(LiteralTranslationUnit<>).MakeGenericType(arg_type);
+                    MethodInfo mi = genericLiteralTranslationUnit.GetMethod("Create", BindingFlags.Static | BindingFlags.Public);
+
+                    return (ITranslationUnit)mi.Invoke(null, new object[] { token.Value });
+
+                    //return LiteralTranslationUnit<token.Value.GetType()>.Create((int)token.Value);
+                    //}
+                    //else
+                    //{
+                    //    return LiteralTranslationUnit<decimal>.Create((decimal)token.Value);
+                    //}
 
                 case SyntaxKind.StringLiteralToken:
                     return LiteralTranslationUnit<string>.Create((string)token.Value);
