@@ -189,7 +189,7 @@
     <Compile Include="walkers\NamespaceASTWalker.cs" />
     <Compile Include="walkers\ProgramASTWalker.cs" />
     <Compile Include="walkers\PropertyASTWalker.cs" />
-    <Compile Include="walkers\statements\TyrStatementASTWalker.cs" />
+    <Compile Include="walkers\statements\TryStatementASTWalker.cs" />
     <Compile Include="walkers\statements\SwitchStatementASTWalker.cs" />
     <Compile Include="walkers\statements\ForStatementASTWalker.cs" />
     <Compile Include="walkers\statements\ForEachStatementASTWalker.cs" />
