@@ -392,11 +392,13 @@ namespace Rosetta.AST
 
         private void VisitStatement(StatementSyntax node)
         {
-            IASTWalker walker = new StatementASTWalkerBuilder(node, this.semanticModel).Build();
-            ITranslationUnit statementTranslationUnit = walker.Walk();
+            if (node.Kind() != SyntaxKind.EmptyStatement)
+            {
+                IASTWalker walker = new StatementASTWalkerBuilder(node, this.semanticModel).Build();
+                ITranslationUnit statementTranslationUnit = walker.Walk();
 
-            this.methodDeclaration.AddStatement(statementTranslationUnit);
-
+                this.methodDeclaration.AddStatement(statementTranslationUnit);
+            }
             this.InvokeStatementVisited(this, new WalkerEventArgs());
         }
 

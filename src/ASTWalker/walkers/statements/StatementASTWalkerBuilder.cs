@@ -84,6 +84,7 @@ namespace Rosetta.AST
                 case SyntaxKind.SwitchStatement:
                     return SwitchStatementASTWalker.Create(this.node, this.semanticModel);
                 case SyntaxKind.TryStatement:
+                    return TryStatementASTWalker.Create(this.node, this.semanticModel);
                 case SyntaxKind.UncheckedStatement:
                 case SyntaxKind.UsingStatement:
                 case SyntaxKind.WhileStatement:
