@@ -193,6 +193,18 @@ namespace Rosetta.Translation
                     return Lexems.LogicalNot;
                 case OperatorToken.Equals:
                     return Lexems.EqualsSign;
+                case OperatorToken.GreaterThan:
+                    return Lexems.GreaterThan;
+                case OperatorToken.GreaterThanOrEquals:
+                    return Lexems.GreaterThanOrEquals;
+                case OperatorToken.LessThan:
+                    return Lexems.LessThan;
+                case OperatorToken.LessThanOrEquals:
+                    return Lexems.LessThanOrEquals;
+                case OperatorToken.LogicalAnd:
+                    return Lexems.LogicalAnd;
+                case OperatorToken.LogicalOr:
+                    return Lexems.LogicalOr;
                 default:
                     return string.Empty;
             }

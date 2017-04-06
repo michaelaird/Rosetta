@@ -56,6 +56,12 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.SubtractExpression:
                 case SyntaxKind.EqualsExpression:
                 case SyntaxKind.NotEqualsExpression:
+                case SyntaxKind.GreaterThanOrEqualExpression:
+                case SyntaxKind.GreaterThanExpression:
+                case SyntaxKind.LessThanOrEqualExpression:
+                case SyntaxKind.LessThanExpression:
+                case SyntaxKind.LogicalAndExpression:
+                case SyntaxKind.LogicalOrExpression:
                     var binaryExpression = this.node as BinaryExpressionSyntax;
                     if (binaryExpression == null)
                     {
@@ -206,6 +212,30 @@ namespace Rosetta.AST.Helpers
 
                 case SyntaxKind.NotEqualsExpression:
                     token = OperatorToken.NotEquals;
+                    break;
+
+                case SyntaxKind.GreaterThanExpression:
+                    token = OperatorToken.GreaterThan;
+                    break;
+
+                case SyntaxKind.GreaterThanOrEqualExpression:
+                    token = OperatorToken.GreaterThanOrEquals;
+                    break;
+
+                case SyntaxKind.LessThanExpression:
+                    token = OperatorToken.LessThan;
+                    break;
+
+                case SyntaxKind.LessThanOrEqualExpression:
+                    token = OperatorToken.LessThanOrEquals;
+                    break;
+
+                case SyntaxKind.LogicalAndExpression:
+                    token = OperatorToken.LogicalAnd;
+                    break;
+
+                case SyntaxKind.LogicalOrExpression:
+                    token = OperatorToken.LogicalOr;
                     break;
             }
 
