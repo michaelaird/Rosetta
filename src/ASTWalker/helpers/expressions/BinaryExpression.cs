@@ -57,6 +57,14 @@ namespace Rosetta.AST.Helpers
                         return OperatorToken.LogicalEquals;
                     case SyntaxKind.NotEqualsExpression:
                         return OperatorToken.NotEquals;
+                    case SyntaxKind.GreaterThanExpression:
+                        return OperatorToken.GreaterThan;
+                    case SyntaxKind.GreaterThanOrEqualExpression:
+                        return OperatorToken.GreaterThanOrEquals;
+                    case SyntaxKind.LessThanExpression:
+                        return OperatorToken.LessThan;
+                    case SyntaxKind.LessThanOrEqualExpression:
+                        return OperatorToken.LessThanOrEquals;
                 }
 
                 return OperatorToken.Undefined;

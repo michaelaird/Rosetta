@@ -145,6 +145,26 @@ namespace Rosetta.Translation
         /// <summary>
         /// 
         /// </summary>
+        GreaterThan,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        GreaterThanOrEquals,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        LessThan,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        LessThanOrEquals,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Undefined
     }
 }
