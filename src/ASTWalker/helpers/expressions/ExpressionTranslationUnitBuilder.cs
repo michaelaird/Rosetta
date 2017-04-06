@@ -60,6 +60,8 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.GreaterThanExpression:
                 case SyntaxKind.LessThanOrEqualExpression:
                 case SyntaxKind.LessThanExpression:
+                case SyntaxKind.LogicalAndExpression:
+                case SyntaxKind.LogicalOrExpression:
                     var binaryExpression = this.node as BinaryExpressionSyntax;
                     if (binaryExpression == null)
                     {
@@ -226,6 +228,14 @@ namespace Rosetta.AST.Helpers
 
                 case SyntaxKind.LessThanOrEqualExpression:
                     token = OperatorToken.LessThanOrEquals;
+                    break;
+
+                case SyntaxKind.LogicalAndExpression:
+                    token = OperatorToken.LogicalAnd;
+                    break;
+
+                case SyntaxKind.LogicalOrExpression:
+                    token = OperatorToken.LogicalOr;
                     break;
             }
 

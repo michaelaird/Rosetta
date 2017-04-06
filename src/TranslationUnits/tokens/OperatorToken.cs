@@ -165,6 +165,16 @@ namespace Rosetta.Translation
         /// <summary>
         /// 
         /// </summary>
+        LogicalAnd,
+
+        /// <summary>
+        /// 
+        /// </summary>
+        LogicalOr,
+
+        /// <summary>
+        /// 
+        /// </summary>
         Undefined
     }
 }

@@ -178,24 +178,34 @@ namespace Rosetta.Translation
         public const string Xor = "^";
 
         /// <summary>
-        /// String rendering constant for XOR token. 
+        /// String rendering constant for greater than token. 
         /// </summary>
         public const string GreaterThan = ">";
 
         /// <summary>
-        /// String rendering constant for XOR token. 
+        /// String rendering constant for greater than or equals token. 
         /// </summary>
         public const string GreaterThanOrEquals = ">=";
 
         /// <summary>
-        /// String rendering constant for XOR token. 
+        /// String rendering constant for less than token. 
         /// </summary>
         public const string LessThan = "<";
 
         /// <summary>
-        /// String rendering constant for XOR token. 
+        /// String rendering constant for less than or equals token. 
         /// </summary>
         public const string LessThanOrEquals = "<=";
+
+        /// <summary>
+        /// String rendering constant for the Logical And token. 
+        /// </summary>
+        public const string LogicalAnd = "&&";
+
+        /// <summary>
+        /// String rendering constant for the Logical Or token. 
+        /// </summary>
+        public const string LogicalOr = "||";
 
         /// <summary>
         /// String rendering constant for XOR assignment token. 

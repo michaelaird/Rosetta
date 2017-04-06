@@ -65,6 +65,10 @@ namespace Rosetta.AST.Helpers
                         return OperatorToken.LessThan;
                     case SyntaxKind.LessThanOrEqualExpression:
                         return OperatorToken.LessThanOrEquals;
+                    case SyntaxKind.LogicalAndExpression:
+                        return OperatorToken.LogicalAnd;
+                    case SyntaxKind.LogicalOrExpression:
+                        return OperatorToken.LogicalOr;
                 }
 
                 return OperatorToken.Undefined;

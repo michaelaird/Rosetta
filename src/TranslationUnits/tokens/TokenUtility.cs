@@ -201,6 +201,10 @@ namespace Rosetta.Translation
                     return Lexems.LessThan;
                 case OperatorToken.LessThanOrEquals:
                     return Lexems.LessThanOrEquals;
+                case OperatorToken.LogicalAnd:
+                    return Lexems.LogicalAnd;
+                case OperatorToken.LogicalOr:
+                    return Lexems.LogicalOr;
                 default:
                     return string.Empty;
             }
