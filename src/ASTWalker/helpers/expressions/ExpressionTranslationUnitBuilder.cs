@@ -143,6 +143,15 @@ namespace Rosetta.AST.Helpers
                     }
                     return BuildMemberAccessExpressionTranslationUnit(memberAccessExpression, this.semanticModel);
 
+                // Element access expressions
+                case SyntaxKind.ElementAccessExpression:
+                    var elementAccessExpression = this.node as ElementAccessExpressionSyntax;
+                    if (elementAccessExpression == null)
+                    {
+                        throw new InvalidCastException("Unable to correctly cast expected element access expression to element access expression!");
+                    }
+                    return BuildElementAccessExpressionTranslationUnit(elementAccessExpression, this.semanticModel);
+
                 // Assignment expressions
                 case SyntaxKind.AddAssignmentExpression:
                 case SyntaxKind.AndAssignmentExpression:
@@ -412,6 +421,34 @@ namespace Rosetta.AST.Helpers
             return MemberAccessExpressionTranslationUnit.Create(
                 IdentifierTranslationUnit.Create(helper.MemberName),
                 MemberAccessExpressionTranslationUnit.MemberAccessMethod.This);
+        }
+
+        private static ITranslationUnit BuildElementAccessExpressionTranslationUnit(ElementAccessExpressionSyntax expression, SemanticModel semanticModel)
+        {
+            var helper = new ElementAccessExpression(expression, semanticModel);
+
+            if (expression.Expression is IdentifierNameSyntax)
+            {
+                // The target is a simple identifier, the code being analysed is of the form
+                // "command.ExecuteReader()" and memberAccess.Expression is the "command"
+                // node
+                return ElementAccessExpressionTranslationUnit.Create(
+                   new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.Argument));
+            }
+            else if (expression.Expression is InvocationExpressionSyntax)
+            {
+                // The target is another invocation, the code being analysed is of the form
+                // "GetCommand().ExecuteReader()" and memberAccess.Expression is the
+                // "GetCommand()" node
+                return ElementAccessExpressionTranslationUnit.Create(
+                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.Argument));
+            }
+
+            return ElementAccessExpressionTranslationUnit.Create(
+                IdentifierTranslationUnit.Create(helper.ToString()),
+                ElementAccessExpressionTranslationUnit.ElementAccessMethod.This);
         }
 
         private static ITranslationUnit BuildAssignmentExpressionTranslationUnit(AssignmentExpressionSyntax expression, SemanticModel semanticModel)

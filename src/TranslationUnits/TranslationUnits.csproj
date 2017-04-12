@@ -47,6 +47,7 @@
     <Compile Include="compound\expressions\BinaryExpressionTranslationUnit.cs" />
     <Compile Include="compound\expressions\CastExpressionTranslationUnit.cs" />
     <Compile Include="compound\expressions\ExpressionTranslationUnit.cs" />
+    <Compile Include="compound\expressions\ElementAccessExpressionTranslationUnit.cs" />
     <Compile Include="compound\expressions\ObjectCreateExpressionTranslationUnit.cs" />
     <Compile Include="compound\expressions\InvokationExpressionTranslationUnit.cs" />
     <Compile Include="compound\expressions\DefaultTranslationUnit.cs" />
