@@ -185,6 +185,8 @@ namespace Rosetta.AST.Helpers
                         throw new InvalidCastException("Unable to correctly cast expected array creation expression to array creation expression!");
                     }
                     return BuildArrayCreationExpressionTranslationUnit(arrayCreationExpression, this.semanticModel);
+                case SyntaxKind.ArrayInitializerExpression:
+                    throw new NotImplementedException("Use Array creation syntax instead: " + this.node.ToString());
                 case SyntaxKind.ThisExpression: //TODO: implement this
                 case SyntaxKind.BaseExpression: //TODO: implement this
                 case SyntaxKind.CastExpression: //TODO: implement this
@@ -192,7 +194,6 @@ namespace Rosetta.AST.Helpers
                 case SyntaxKind.AsExpression: //TODO: implement this
                 case SyntaxKind.ConditionalExpression: //TODO: implement this
                 case SyntaxKind.CoalesceExpression: //TODO: implement this
-                case SyntaxKind.ArrayInitializerExpression: //TODO: implement this
                 default:
                     var defaultExpression = this.node as CSharpSyntaxNode;
                     if (defaultExpression == null)
