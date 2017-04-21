@@ -188,7 +188,7 @@ namespace Rosetta.AST.Helpers
             typeSymbol.ToDisplayString(new SymbolDisplayFormat(
                 typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces));
 
-        protected TypeSyntax TypeSyntaxNode
+        public TypeSyntax TypeSyntaxNode
         {
             get { return this.SyntaxNode as TypeSyntax; }
         }

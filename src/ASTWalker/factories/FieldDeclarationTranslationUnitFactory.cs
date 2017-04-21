@@ -60,7 +60,7 @@ namespace Rosetta.AST.Factories
 
             fieldDeclaration = this.CreateTranslationUnit(
                 helper.Visibility,
-                TypeIdentifierTranslationUnit.Create(helper.Type.FullName.MapType()),
+                TypeIdentifierTranslationUnit.Create(helper.Type.TypeSyntaxNode.MapType()),
                 IdentifierTranslationUnit.Create(helper.Name),
                 expressionTranslationUnit);
 
