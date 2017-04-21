@@ -177,6 +177,22 @@ namespace Rosetta.AST.Helpers
                         throw new InvalidCastException("Unable to correctly cast expected anonymous method expression to anonymous method expression!");
                     }
                     return BuildAnonymousMethodExpressionTranslationUnit(anonymousMethodExpression, this.semanticModel);
+
+                case SyntaxKind.ArrayCreationExpression:
+                    var arrayCreationExpression = this.node as ArrayCreationExpressionSyntax;
+                    if(arrayCreationExpression == null)
+                    {
+                        throw new InvalidCastException("Unable to correctly cast expected array creation expression to array creation expression!");
+                    }
+                    return BuildArrayCreationExpressionTranslationUnit(arrayCreationExpression, this.semanticModel);
+                case SyntaxKind.ThisExpression: //TODO: implement this
+                case SyntaxKind.BaseExpression: //TODO: implement this
+                case SyntaxKind.CastExpression: //TODO: implement this
+                case SyntaxKind.IsExpression: //TODO: implement this
+                case SyntaxKind.AsExpression: //TODO: implement this
+                case SyntaxKind.ConditionalExpression: //TODO: implement this
+                case SyntaxKind.CoalesceExpression: //TODO: implement this
+                case SyntaxKind.ArrayInitializerExpression: //TODO: implement this
                 default:
                     var defaultExpression = this.node as CSharpSyntaxNode;
                     if (defaultExpression == null)
@@ -419,12 +435,7 @@ namespace Rosetta.AST.Helpers
             }
             else if (expression.Expression is ElementAccessExpressionSyntax)
             {
-                // The target is a member access, the code being analysed is of the form
-                // "x.Command.ExecuteReader()" and memberAccess.Expression is the "x.Command"
-                // node
-                return ElementAccessExpressionTranslationUnit.Create(
-                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
-                    IdentifierTranslationUnit.Create(helper.MemberName));
+                return BuildElementAccessExpressionTranslationUnit((ElementAccessExpressionSyntax)expression.Expression, semanticModel);
             }
 
             return MemberAccessExpressionTranslationUnit.Create(
@@ -436,28 +447,17 @@ namespace Rosetta.AST.Helpers
         {
             var helper = new ElementAccessExpression(expression, semanticModel);
 
-            if (expression.Expression is IdentifierNameSyntax)
+            var translationUnit = ElementAccessExpressionTranslationUnit.Create(
+                new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
+
+            foreach (var argument in helper.Arguments)
             {
-                // The target is a simple identifier, the code being analysed is of the form
-                // "command.ExecuteReader()" and memberAccess.Expression is the "command"
-                // node
-                return ElementAccessExpressionTranslationUnit.Create(
-                   new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
-                    IdentifierTranslationUnit.Create(helper.Argument));
-            }
-            else if (expression.Expression is InvocationExpressionSyntax)
-            {
-                // The target is another invocation, the code being analysed is of the form
-                // "GetCommand().ExecuteReader()" and memberAccess.Expression is the
-                // "GetCommand()" node
-                return ElementAccessExpressionTranslationUnit.Create(
-                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
-                    IdentifierTranslationUnit.Create(helper.Argument));
+                var argumentTranslationUnit = new ExpressionTranslationUnitBuilder(argument.Expression, semanticModel).Build();
+
+                translationUnit.AddArgument(argumentTranslationUnit);
             }
 
-            return ElementAccessExpressionTranslationUnit.Create(
-                IdentifierTranslationUnit.Create(helper.ToString()),
-                ElementAccessExpressionTranslationUnit.ElementAccessMethod.This);
+            return translationUnit;
         }
 
         private static ITranslationUnit BuildAssignmentExpressionTranslationUnit(AssignmentExpressionSyntax expression, SemanticModel semanticModel)
@@ -499,6 +499,26 @@ namespace Rosetta.AST.Helpers
                 var argumentTranslationUnit = new ExpressionTranslationUnitBuilder(argument.Expression, semanticModel).Build();
 
                 translationUnit.AddArgument(argumentTranslationUnit);
+            }
+
+            return translationUnit;
+        }
+
+        private static ITranslationUnit BuildArrayCreationExpressionTranslationUnit(ArrayCreationExpressionSyntax expression, SemanticModel semanticModel)
+        {
+            var helper = new ArrayCreationExpression(expression, semanticModel);
+
+            var translationUnit = ArrayCreateExpressionTranslationUnit.Create(
+                new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
+
+            if (helper.Initializer != null)
+            {
+                foreach (var argument in helper.Initializer.Expressions)
+                {
+                    var argumentTranslationUnit = new ExpressionTranslationUnitBuilder(argument, semanticModel).Build();
+
+                    translationUnit.AddArgument(argumentTranslationUnit);
+                }
             }
 
             return translationUnit;

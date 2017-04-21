@@ -1,20 +1,25 @@
 ﻿/// <summary>
-/// MemberAccessExpression.cs
-/// Andrea Tino - 2015
+/// ElementAccessExpression.cs
+/// Scott Bannister - 2017
 /// </summary>
 
 namespace Rosetta.AST.Helpers
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Helper for accessing member access expressions in AST.
     /// </summary>
     public class ElementAccessExpression : Helper
     {
+        // Cached values
+        private IEnumerable<Argument> arguments;
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemberAccessExpression"/> class.
+        /// Initializes a new instance of the <see cref="ElementAccessExpression"/> class.
         /// </summary>
         /// <param name="syntaxNode"></param>
         public ElementAccessExpression(ElementAccessExpressionSyntax syntaxNode)
@@ -23,7 +28,7 @@ namespace Rosetta.AST.Helpers
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemberAccessExpression"/> class.
+        /// Initializes a new instance of the <see cref="ElementAccessExpression"/> class.
         /// </summary>
         /// <param name="syntaxNode"></param>
         /// <param name="semanticModel"></param>
@@ -33,32 +38,28 @@ namespace Rosetta.AST.Helpers
         }
 
         /// <summary>
-        /// Gets the member name value.
+        /// Gets the list of parameters.
         /// </summary>
-        public string MemberName
+        public IEnumerable<Argument> Arguments
         {
             get
             {
-                switch (this.ElementAccessExpressionSyntaxNode.Expression.ToString())
+                if (this.arguments == null)
                 {
-                    case "ObservableArray":
-                        return "observableArray";
-
-                    case "Observable":
-                        return "observable";
-
-                    default:
-                        return this.ElementAccessExpressionSyntaxNode.Expression.ToString();
+                    this.arguments = this.ElementAccessExpressionSyntaxNode.ArgumentList.Arguments.Select(
+                        (ArgumentSyntax p) => new Argument(p)).ToList();
                 }
+
+                return this.arguments;
             }
         }
 
-        public string Argument
+        /// <summary>
+        /// Gets the expression.
+        /// </summary>
+        public ExpressionSyntax Expression
         {
-            get
-            {
-                return this.ElementAccessExpressionSyntaxNode.ArgumentList.Arguments.ToString();
-            }
+            get { return this.ElementAccessExpressionSyntaxNode.Expression; }
         }
 
         private ElementAccessExpressionSyntax ElementAccessExpressionSyntaxNode

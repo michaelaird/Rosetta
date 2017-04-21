@@ -1,6 +1,6 @@
 ﻿/// <summary>
-/// ElementAccessExpressionTranslationUnit.cs
-/// Scott Bannister - 2017
+/// ArrayCreateExpressionTranslationUnit.cs
+/// Michael Aird - 2017
 /// </summary>
 
 namespace Rosetta.Translation
@@ -12,24 +12,24 @@ namespace Rosetta.Translation
     /// <summary>
     /// Class describing member access syntaxes.
     /// </summary>
-    public class ElementAccessExpressionTranslationUnit : ExpressionTranslationUnit, ICompoundTranslationUnit
+    public class ArrayCreateExpressionTranslationUnit : ExpressionTranslationUnit
     {
         private ITranslationUnit expression;
         private IEnumerable<ITranslationUnit> arguments;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvokationExpressionTranslationUnit"/> class.
+        /// Initializes a new instance of the <see cref="ArrayCreateExpressionTranslationUnit"/> class.
         /// </summary>
-        protected ElementAccessExpressionTranslationUnit()
+        protected ArrayCreateExpressionTranslationUnit()
             : this(AutomaticNestingLevel)
         {
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="InvokationExpressionTranslationUnit"/> class.
+        /// Initializes a new instance of the <see cref="ArrayCreateExpressionTranslationUnit"/> class.
         /// </summary>
         /// <param name="nestingLevel"></param>
-        protected ElementAccessExpressionTranslationUnit(int nestingLevel)
+        protected ArrayCreateExpressionTranslationUnit(int nestingLevel)
             : base(nestingLevel)
         {
             this.expression = null;
@@ -42,28 +42,17 @@ namespace Rosetta.Translation
         /// <param name="member"></param>
         /// <param name="accessMethod"></param>
         /// <returns></returns>
-        public static ElementAccessExpressionTranslationUnit Create(ITranslationUnit invokeeName)
+        public static ArrayCreateExpressionTranslationUnit Create(ITranslationUnit invokeeName)
         {
             if (invokeeName == null)
             {
                 throw new ArgumentNullException(nameof(invokeeName));
             }
 
-            return new ElementAccessExpressionTranslationUnit(AutomaticNestingLevel)
+            return new ArrayCreateExpressionTranslationUnit(AutomaticNestingLevel)
             {
                 expression = invokeeName
             };
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public IEnumerable<ITranslationUnit> InnerUnits
-        {
-            get
-            {
-                return this.arguments;
-            }
         }
 
         /// <summary>
@@ -77,9 +66,8 @@ namespace Rosetta.Translation
                 Formatter = this.Formatter
             };
 
-            // Invokation: <expression>([<params>])
-            writer.WriteLine("{0}{1}",
-                this.expression.Translate(),
+            // Invokation: ([<initializers>])
+            writer.WriteLine("{0}",
                 SyntaxUtility.ToSquareBracketEnclosedList(this.arguments.Select(unit => unit.Translate()))
                 );
 
