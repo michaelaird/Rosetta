@@ -14,7 +14,7 @@ namespace Rosetta.Translation
     /// <remarks>
     public class ExpressionStatementTranslationUnit : StatementTranslationUnit
     {
-        protected ExpressionTranslationUnit expression;
+        protected ITranslationUnit expression;
         protected string keyword;
 
         /// <summary>
@@ -56,9 +56,9 @@ namespace Rosetta.Translation
         /// <param name="expression"></param>
         /// <param name="keyword"></param>
         /// <returns></returns>
-        public static ExpressionStatementTranslationUnit Create(ExpressionTranslationUnit expression, string keyword = null)
+        public static ExpressionStatementTranslationUnit Create(ITranslationUnit expression, string keyword = null)
         {
-            ExpressionTranslationUnit realExpression = expression ?? ExpressionTranslationUnit.Create(VoidTranslationUnit.Create());
+            ITranslationUnit realExpression = expression ?? ExpressionTranslationUnit.Create(VoidTranslationUnit.Create());
 
             return new ExpressionStatementTranslationUnit(AutomaticNestingLevel)
             {
@@ -72,7 +72,7 @@ namespace Rosetta.Translation
         /// </summary>
         /// <param name="expression"></param>
         /// <returns></returns>
-        public static ExpressionStatementTranslationUnit CreateReturn(ExpressionTranslationUnit expression)
+        public static ExpressionStatementTranslationUnit CreateReturn(ITranslationUnit expression)
         {
             return Create(expression, Lexems.ReturnKeyword);
         }

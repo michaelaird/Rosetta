@@ -101,7 +101,7 @@ namespace Rosetta.Translation
             };
 
                 // Opening
-                writer.WriteLine("{0}().forEach(({1}: {2}{3} {4}{5}",
+                writer.WriteLine("{0}.forEach(({1}: {2}{3} {4}{5}",
                     this.forEachExpression[2],this.forEachExpression[1], this.forEachExpression[0], Lexems.CloseRoundBracket, Lexems.EqualsSign, Lexems.CloseAngularBracket);
 
                 writer.WriteLine("{0}",

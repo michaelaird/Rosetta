@@ -114,7 +114,7 @@ namespace Rosetta.AST
             }
 
             var expression = new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build();
-            return ExpressionStatementTranslationUnit.CreateReturn(expression as ExpressionTranslationUnit);
+            return ExpressionStatementTranslationUnit.CreateReturn(expression);
         }
 
         private static ExpressionStatementTranslationUnit CreateThrowStatement(ThrowStatement helper, SemanticModel semanticModel)
