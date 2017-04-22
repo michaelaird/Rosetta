@@ -139,7 +139,10 @@ namespace Rosetta.Translation
         {
             var type = statement.GetType();
 
-            var shouldNotRenderSemicolon = type == typeof(ConditionalStatementTranslationUnit);
+            var shouldNotRenderSemicolon = type == typeof(ConditionalStatementTranslationUnit)
+                || type == typeof(ForStatementTranslationUnit)
+                || type == typeof(SwitchStatementTranslationUnit)
+                || type == typeof(TryStatementTranslationUnit);
 
             return !shouldNotRenderSemicolon;
         }

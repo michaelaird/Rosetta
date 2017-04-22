@@ -111,8 +111,8 @@ namespace Rosetta.Translation
                     this.body.Translate());
 
             // Closing
-            writer.WriteLine("{0}{1}",
-                Lexems.CloseCurlyBracket, Lexems.CloseRoundBracket);
+            writer.WriteLine("{0}",
+                Lexems.CloseCurlyBracket);
 
             return writer.ToString();
         }

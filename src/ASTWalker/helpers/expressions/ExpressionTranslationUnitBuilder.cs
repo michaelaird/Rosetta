@@ -416,6 +416,15 @@ namespace Rosetta.AST.Helpers
                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
                     IdentifierTranslationUnit.Create(helper.MemberName));
             }
+            else if (expression.Expression is PredefinedTypeSyntax)
+            {
+                // The target is a simple identifier, the code being analysed is of the form
+                // "command.ExecuteReader()" and memberAccess.Expression is the "command"
+                // node
+                return MemberAccessExpressionTranslationUnit.Create(
+                   new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.MemberName));
+            }
             else if (expression.Expression is InvocationExpressionSyntax)
             {
                 // The target is another invocation, the code being analysed is of the form
