@@ -7,6 +7,9 @@ namespace Rosetta.AST.Helpers
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using System.Linq;
+    using Translation;
+    using Utilities;
 
     /// <summary>
     /// Helper for accessing identifier expressions in AST.
@@ -39,15 +42,30 @@ namespace Rosetta.AST.Helpers
         {
             get
             {
+                string identifier = null;
+
                 switch (this.IdentifierNameSyntaxNode.Identifier.ValueText)
                 {
                     case "Knockout":
-                        return "ko";
+                        identifier = "ko";
+                        break;
                     case "KnockoutUtils":
-                        return "ko.utils";
+                        identifier = "ko.utils";
+                        break;
                     default:
-                        return this.IdentifierNameSyntaxNode.Identifier.ValueText;
+                        identifier = this.IdentifierNameSyntaxNode.Identifier.ValueText;
+                        break;
                 }
+
+                if (this.IdentifierNameSyntaxNode is GenericNameSyntax)
+                {
+                    GenericNameSyntax genericSyntax = this.IdentifierNameSyntaxNode as GenericNameSyntax;
+
+                    identifier = identifier +
+                                           SyntaxUtility.ToAngleBracketEnclosedList(genericSyntax.TypeArgumentList.Arguments.Select(unit => unit.MapType()));
+                }
+
+                return identifier;
             }
         }
 

@@ -7,6 +7,9 @@ namespace Rosetta.AST.Helpers
 {
     using Microsoft.CodeAnalysis;
     using Microsoft.CodeAnalysis.CSharp.Syntax;
+    using System.Linq;
+    using Translation;
+    using Utilities;
 
     /// <summary>
     /// Helper for accessing member access expressions in AST.
@@ -39,17 +42,30 @@ namespace Rosetta.AST.Helpers
         {
             get
             {
+                string name = null;
+
                 switch (this.MemberAccessExpressionSyntaxNode.Name.Identifier.ValueText)
                 {
                     case "ObservableArray":
-                        return "observableArray";
-
+                        name = "observableArray";
+                        break;
                     case "Observable":
-                        return "observable";
-
+                        name = "observable";
+                        break;
                     default:
-                        return this.MemberAccessExpressionSyntaxNode.Name.Identifier.ValueText;
+                        name = this.MemberAccessExpressionSyntaxNode.Name.Identifier.ValueText;
+                        break;
                 }
+
+                if (this.MemberAccessExpressionSyntaxNode.Name is GenericNameSyntax)
+                {
+                    GenericNameSyntax genericSyntax = this.MemberAccessExpressionSyntaxNode.Name as GenericNameSyntax;
+
+                    name = name +
+                                           SyntaxUtility.ToAngleBracketEnclosedList(genericSyntax.TypeArgumentList.Arguments.Select(unit => unit.MapType()));
+                }
+
+                return name;
             }
         }
 

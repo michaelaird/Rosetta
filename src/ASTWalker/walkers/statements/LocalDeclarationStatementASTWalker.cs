@@ -12,6 +12,7 @@ namespace Rosetta.AST
 
     using Rosetta.Translation;
     using Rosetta.AST.Helpers;
+    using Utilities;
 
     /// <summary>
     /// This is a walker for local eclarations.
@@ -78,7 +79,7 @@ namespace Rosetta.AST
                 : new ExpressionTranslationUnitBuilder(expression, semanticModel).Build();
 
             var variableDeclarationTranslationUnit = VariableDeclarationTranslationUnit.Create(
-                TypeIdentifierTranslationUnit.Create(variableDeclaration.Type.Name),
+                TypeIdentifierTranslationUnit.Create(variableDeclaration.Type.TypeSyntaxNode.MapType()),
                 IdentifierTranslationUnit.Create(variableDeclaration.Names[0]),
                 expressionTranslationUnit);
 

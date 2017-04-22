@@ -49,9 +49,6 @@ namespace Rosetta.AST.Utilities
 
                     originalType = genericNameSyntaxNode.Identifier.ValueText;
 
-                    originalType = originalType +
-                        SyntaxUtility.ToAngleBracketEnclosedList(genericNameSyntaxNode.TypeArgumentList.Arguments.Select(unit => unit.MapType()));
-
                     break;
                 case SyntaxKind.IdentifierName:
                     var simpleNameSyntaxNode = originalTypeSyntax as SimpleNameSyntax;
@@ -61,14 +58,12 @@ namespace Rosetta.AST.Utilities
                 case SyntaxKind.ArrayType:
                     var arrayTypeSyntaxNode = originalTypeSyntax as ArrayTypeSyntax;
 
-                    originalType = arrayTypeSyntaxNode.ElementType.MapType() +"[]";
-
+                    originalType = arrayTypeSyntaxNode.ElementType.MapType();
                     break;
                 case SyntaxKind.NullableType:
                     var nullableTypeSyntaxNode = originalTypeSyntax as NullableTypeSyntax;
 
-                    originalType = nullableTypeSyntaxNode.ElementType.MapType() + "|null";
-
+                    originalType = nullableTypeSyntaxNode.ElementType.MapType();
                     break;
                 case SyntaxKind.QualifiedName:
                     var qualifiedNameSyntaxNode = originalTypeSyntax as QualifiedNameSyntax;
@@ -88,55 +83,79 @@ namespace Rosetta.AST.Utilities
 
             if (IsVoid(originalType))
             {
-                return Lexems.VoidReturnType;
+                originalType = Lexems.VoidReturnType;
             }
 
             if (IsString(originalType))
             {
-                return Lexems.StringType;
+                originalType = Lexems.StringType;
             }
 
             if (IsInt(originalType))
             {
-                return Lexems.NumberType;
+                originalType = Lexems.NumberType;
             }
 
             if (IsDouble(originalType))
             {
-                return Lexems.NumberType;
+                originalType = Lexems.NumberType;
             }
 
             if (IsFloat(originalType))
             {
-                return Lexems.NumberType;
+                originalType = Lexems.NumberType;
             }
 
             if (IsBool(originalType))
             {
-                return Lexems.BooleanType;
+                originalType = Lexems.BooleanType;
             }
 
             if (IsKnockoutObservable(originalType))
             {
-                return "KnockoutObservable";
+                originalType = "KnockoutObservable";
             }
 
             if (IsKnockoutObservableArray(originalType))
             {
-                return "KnockoutObservableArray";
+                originalType = "KnockoutObservableArray";
             }
 
             if (IsKnockoutComputedObservable(originalType))
             {
-                return "KnockoutComputed";
+                originalType = "KnockoutComputed";
             }
 
             if (IsObject(originalType))
             {
-                return Lexems.AnyType;
+                originalType = Lexems.AnyType;
             }
 
-            // No type could be found
+            switch (originalTypeSyntax.Kind())
+            {
+                case SyntaxKind.GenericName:
+                    var genericNameSyntaxNode = originalTypeSyntax as GenericNameSyntax;
+
+                    originalType = originalType +
+                        SyntaxUtility.ToAngleBracketEnclosedList(genericNameSyntaxNode.TypeArgumentList.Arguments.Select(unit => unit.MapType()));
+
+                    break;
+                case SyntaxKind.ArrayType:
+                    var arrayTypeSyntaxNode = originalTypeSyntax as ArrayTypeSyntax;
+
+                    originalType = originalType + "[]";
+
+                    break;
+                case SyntaxKind.NullableType:
+                    var nullableTypeSyntaxNode = originalTypeSyntax as NullableTypeSyntax;
+
+                    originalType = originalType + "|null";
+
+                    break;
+                default:
+                    break;
+            }
+
             return originalType;
         }
 
