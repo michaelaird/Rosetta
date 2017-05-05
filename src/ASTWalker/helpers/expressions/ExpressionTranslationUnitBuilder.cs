@@ -177,10 +177,16 @@ namespace Rosetta.AST.Helpers
                         throw new InvalidCastException("Unable to correctly cast expected anonymous method expression to anonymous method expression!");
                     }
                     return BuildAnonymousMethodExpressionTranslationUnit(anonymousMethodExpression, this.semanticModel);
-
+                case SyntaxKind.CastExpression:
+                    var castExpression = this.node as CastExpressionSyntax;
+                    if(castExpression == null)
+                    {
+                        throw new InvalidCastException("Unable to correctly cast expected cast expression to cast expression!");
+                    }
+                    return BuildCastExpressionTranslationUnit(castExpression, this.semanticModel);
                 case SyntaxKind.ArrayCreationExpression:
                     var arrayCreationExpression = this.node as ArrayCreationExpressionSyntax;
-                    if(arrayCreationExpression == null)
+                    if (arrayCreationExpression == null)
                     {
                         throw new InvalidCastException("Unable to correctly cast expected array creation expression to array creation expression!");
                     }
@@ -189,7 +195,6 @@ namespace Rosetta.AST.Helpers
                     throw new NotImplementedException("Use Array creation syntax instead: " + this.node.ToString());
                 case SyntaxKind.ThisExpression: //TODO: implement this
                 case SyntaxKind.BaseExpression: //TODO: implement this
-                case SyntaxKind.CastExpression: //TODO: implement this
                 case SyntaxKind.IsExpression: //TODO: implement this
                 case SyntaxKind.AsExpression: //TODO: implement this
                 case SyntaxKind.ConditionalExpression: //TODO: implement this
@@ -447,6 +452,12 @@ namespace Rosetta.AST.Helpers
             {
                 return BuildElementAccessExpressionTranslationUnit((ElementAccessExpressionSyntax)expression.Expression, semanticModel);
             }
+            else if (expression.Expression is ParenthesizedExpressionSyntax)
+            {
+                return MemberAccessExpressionTranslationUnit.Create(
+                    new ExpressionTranslationUnitBuilder(expression.Expression, semanticModel).Build(),
+                    IdentifierTranslationUnit.Create(helper.MemberName));
+            }
 
             return MemberAccessExpressionTranslationUnit.Create(
                 IdentifierTranslationUnit.Create(helper.MemberName),
@@ -458,7 +469,7 @@ namespace Rosetta.AST.Helpers
             var helper = new ElementAccessExpression(expression, semanticModel);
 
             var translationUnit = ElementAccessExpressionTranslationUnit.Create(
-                new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
+                 new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
 
             foreach (var argument in helper.Arguments)
             {
@@ -507,7 +518,6 @@ namespace Rosetta.AST.Helpers
             foreach (var argument in helper.Arguments)
             {
                 var argumentTranslationUnit = new ExpressionTranslationUnitBuilder(argument.Expression, semanticModel).Build();
-
                 translationUnit.AddArgument(argumentTranslationUnit);
             }
 
@@ -548,6 +558,14 @@ namespace Rosetta.AST.Helpers
             var translationUnit = methodWalker.Walk();
 
             return translationUnit;
+        }
+
+        public static ITranslationUnit BuildCastExpressionTranslationUnit(CastExpressionSyntax castExpression, SemanticModel semanticModel)
+        {
+            var helper = new CastExpression(castExpression, semanticModel);
+            return CastExpressionTranslationUnit.Create(
+                TypeIdentifierTranslationUnit.Create(helper.Type.MapType()),
+                    new ExpressionTranslationUnitBuilder(helper.Expression, semanticModel).Build());
         }
 
         private static ITranslationUnit BuildDefaultExpressionTranslationUnit(CSharpSyntaxNode expression, SemanticModel semanticModel)

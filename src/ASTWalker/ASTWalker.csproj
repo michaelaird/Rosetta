@@ -186,6 +186,7 @@
     <Compile Include="helpers\expressions\ExpressionTranslationUnitBuilder.cs" />
     <Compile Include="helpers\expressions\IdentifierExpression.cs" />
     <Compile Include="helpers\expressions\ElementAccessExpression.cs" />
+    <Compile Include="helpers\expressions\CastExpression.cs" />
     <Compile Include="helpers\expressions\ArrayCreationExpression.cs" />
     <Compile Include="helpers\expressions\ObjectCreationExpression.cs" />
     <Compile Include="helpers\expressions\InvokationExpression.cs" />
