@@ -14,6 +14,7 @@ namespace Rosetta.ScriptSharp.Definition.AST
     using Rosetta.AST.Helpers;
     using Rosetta.AST.Transformers;
     using Rosetta.ScriptSharp.AST.Transformers;
+    using Rosetta.Utils;
 
     /// <summary>
     /// Acts like a wrapper for <see cref="ProgramDefinitionASTWalker"/> in order to provide 
@@ -74,6 +75,8 @@ namespace Rosetta.ScriptSharp.Definition.AST
 
         private void Initialize()
         {
+            // TODO: In order to target #41, add an option for using the reflector when requested
+
             // Getting the AST node
             this.tree = ASTExtractor.Extract(this.source);
 
